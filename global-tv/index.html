@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Globe TV · 看遍全球电视</title>
+<meta name="description" content="一个会转动的 3D 地球仪，点开任意一个亮点就能收看全球 180+ 个国家的 10000+ 个电视频道。数据来自 iptv-org。" />
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/css/style.css" />
+<script>
+/* 尽早并行做三件事，避免串行等待（托管商每个请求有 1~2s 基础延迟，能少等就少等）：
+   1. 先定主题 —— 否则浅色用户会先看到深色启动页再翻白
+   2. 预加载对应主题的地球贴图
+   3. 立刻开始下载频道数据（体积最大的一份）
+   file:// 直开时不做这些（预加载会被同源策略拦掉，反而刷一堆报错）。 */
+(function () {
+  var dark = true;
+  try {
+    var t = localStorage.getItem('globetv.theme');
+    dark = t ? JSON.parse(t) === 'dark'
+             : !(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+  } catch (e) { }
+  if (!dark) document.documentElement.classList.remove('dark');
+
+  if (location.protocol === 'file:') return;      // 本地直开：贴图交给纹理加载器，别预加载
+
+  var f = document.createElement('link');
+  f.rel = 'preload'; f.as = 'font'; f.type = 'font/woff2'; f.crossOrigin = 'anonymous';
+  f.href = 'assets/fonts/InstrumentSerif-Regular-latin.woff2';
+  document.head.appendChild(f);
+
+  var l = document.createElement('link');
+  l.rel = 'preload'; l.as = 'image';
+  l.href = 'assets/img/' + (dark ? 'earth-dark.jpg' : 'earth-light.jpg');
+  document.head.appendChild(l);
+
+  if (window.fetch && 'DecompressionStream' in window) {
+    window.__tvGz = fetch('assets/js/data/channels.json.gz')
+      .catch(function () { return null; });
+  }
+})();
+</script>
+</head>
+<body>
+
+<!-- ===================== 背景层 ===================== -->
+<canvas id="globe-canvas"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- ===================== 载入层 ===================== -->
+<div class="boot" id="boot">
+  <div class="boot-orb"><span></span></div>
+  <div class="boot-text">正在接上全球信号</div>
+  <div class="boot-sub" id="boot-sub">载入频道目录…</div>
+</div>
+
+<!-- ===================== 顶栏 ===================== -->
+<header class="topbar">
+  <div class="brand" id="brand">
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+        <circle cx="12" cy="12" r="9.2"/><ellipse cx="12" cy="12" rx="4" ry="9.2"/>
+        <path d="M2.9 12h18.2M4.2 7.2h15.6M4.2 16.8h15.6"/>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <h1>Globe&nbsp;TV</h1>
+      <p>看遍全球电视 · 点开即播</p>
+    </div>
+  </div>
+
+  <div class="searchwrap">
+    <div class="search">
+      <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      <input id="search-input" type="search" placeholder="搜索频道 / 国家 / 分类…  (按 / 聚焦)" autocomplete="off" spellcheck="false" />
+      <kbd class="keycap" id="search-kbd">/</kbd>
+    </div>
+    <div class="suggest" id="suggest" hidden></div>
+  </div>
+
+  <nav class="topactions">
+    <button class="skeu-key" id="btn-random" title="随机打开一个频道">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M16 3h5v5M4 20l16-16M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+      <span>随机</span>
+    </button>
+    <button class="skeu-key" id="btn-browse" title="浏览全部频道">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      <span>全部频道</span>
+    </button>
+    <button class="skeu-key" id="btn-https" title="只显示 HTTPS 可播的频道" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4.5" y="10.5" width="15" height="9.5" rx="2.2"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/><path d="M12 14.2v2.4"/></svg>
+      <span>仅 HTTPS</span>
+    </button>
+    <button class="skeu-key icon-only" id="btn-updates" title="更新记录">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 7.6v4.6l3 1.8"/><circle cx="12" cy="12" r="8.6"/></svg>
+      <i class="keydot" id="upd-dot" hidden></i>
+    </button>
+    <button class="skeu-key icon-only" id="btn-theme" title="切换主题">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg>
+    </button>
+    <a class="skeu-key icon-only" href="https://github.com/iptv-org/iptv" target="_blank" rel="noopener" title="数据来源：iptv-org">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.6 2 12.2c0 4.5 2.9 8.3 6.8 9.6.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.7-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.3 4.7-4.6 5 .4.3.7 1 .7 2v2.9c0 .3.2.6.7.5A10.1 10.1 0 0 0 22 12.2C22 6.6 17.5 2 12 2z"/></svg>
+    </a>
+  </nav>
+</header>
+
+<!-- ===================== 左侧：频道浏览器 ===================== -->
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div class="drawer-tabs" id="drawer-tabs">
+      <button class="tab is-active" data-tab="country">国家</button>
+      <button class="tab" data-tab="category">分类</button>
+      <button class="tab" data-tab="fav">收藏</button>
+    </div>
+    <button class="skeu-key icon-only" id="drawer-close" title="收起">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+  </div>
+  <div class="drawer-scroll" id="drawer-scroll">
+    <div class="drawer-pane" id="pane-country"></div>
+    <div class="drawer-pane" id="pane-category" hidden></div>
+    <div class="drawer-pane" id="pane-fav" hidden></div>
+    <div class="drawer-pane" id="pane-result" hidden></div>
+  </div>
+</aside>
+
+<!-- ===================== 底部 HUD ===================== -->
+<div class="hud" id="hud">
+  <div class="hud-stats">
+    <span><b id="stat-ch">–</b> 个频道</span><i>·</i>
+    <span><b id="stat-cc">–</b> 个国家</span><i>·</i>
+    <span><b id="stat-st">–</b> 条线路</span>
+  </div>
+  <div class="hud-hint">拖动旋转 · 滚轮缩放 · 点击亮点播放</div>
+</div>
+
+<!-- ===================== 缩放控件 ===================== -->
+<div class="zoomctl">
+  <button class="skeu-key icon-only" id="z-in" title="放大"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button class="skeu-key icon-only" id="z-out" title="缩小"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14"/></svg></button>
+  <button class="skeu-key icon-only" id="z-reset" title="回到全球视角"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.4 2.4 2.4 13.6 0 16M12 4c-2.4 2.4-2.4 13.6 0 16"/></svg></button>
+</div>
+
+<!-- ===================== 悬停提示 ===================== -->
+<div class="tip" id="tip" hidden>
+  <div class="tip-logo" id="tip-logo"></div>
+  <div class="tip-body">
+    <div class="tip-name" id="tip-name"></div>
+    <div class="tip-meta" id="tip-meta"></div>
+  </div>
+  <div class="tip-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></div>
+</div>
+
+<!-- ===================== 播放器 ===================== -->
+<section class="player" id="player" hidden>
+  <div class="player-head">
+    <div class="player-id">
+      <div class="player-logo" id="p-logo"></div>
+      <div class="player-titles">
+        <div class="player-name" id="p-name">—</div>
+        <div class="player-meta" id="p-meta"></div>
+      </div>
+    </div>
+    <div class="player-head-actions">
+      <button class="skeu-key icon-only" id="p-fav" title="收藏">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4.6l2.3 4.9 5.2.7-3.8 3.6.9 5.2-4.6-2.5-4.6 2.5.9-5.2L4.5 10.2l5.2-.7z"/></svg>
+      </button>
+      <button class="skeu-key icon-only" id="p-live" title="线路状态"><span class="dot-live"></span></button>
+      <button class="skeu-key icon-only" id="p-close" title="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+    <video id="video" playsinline webkit-playsinline preload="none"></video>
+    <div class="stage-cover" id="p-cover"></div>
+    <div class="stage-msg" id="p-msg" hidden>
+      <div class="spinner" id="p-spin"></div>
+      <div class="stage-msg-title" id="p-msg-title">正在连接信号…</div>
+      <div class="stage-msg-sub" id="p-msg-sub"></div>
+      <div class="stage-msg-actions" id="p-msg-actions"></div>
+    </div>
+    <div class="stage-badge" id="p-quality"></div>
+    <button class="stage-big" id="p-bigplay" aria-label="播放">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+    </button>
+    <!-- 全屏专用控制条：鼠标动一下淡入，停手两秒淡出。
+         全屏时 .stage 独占整屏，控件栏在外面看不到，所以暂停 / 退出全屏放这里。 -->
+    <div class="stage-ctl" id="p-fsctl">
+      <button class="stage-ctl-btn" id="p-fsplay" aria-label="播放或暂停">
+        <svg viewBox="0 0 24 24" fill="currentColor" id="p-fsplay-icon"><path d="M8 5.5v13l11-6.5z"/></svg>
+      </button>
+      <button class="stage-ctl-btn" id="p-fsexit" aria-label="退出全屏">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M9 4v5H4M15 20v-5h5M20 9h-5V4M4 15h5v5"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="player-bar">
+    <div class="sources" id="p-sources"></div>
+    <div class="player-ctl">
+      <button class="skeu-key icon-only" id="p-mute" title="静音">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M11 5.5L6.8 9H3.6v6h3.2L11 18.5z"/><path d="M15 9.5c1.2 1.4 1.2 3.6 0 5"/></svg>
+      </button>
+      <input class="fader" id="p-vol" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="音量" />
+      <button class="skeu-key icon-only" id="p-fs" title="全屏">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 9V4h5M20 15v5h-5M20 9V4h-5M4 15v5h5"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="playlist" id="p-playlist">
+    <div class="playlist-head">
+      <span id="p-pl-title">该国频道</span>
+      <input id="p-pl-filter" class="pl-filter" placeholder="筛选…" autocomplete="off" />
+    </div>
+    <div class="playlist-body" id="p-pl-body"></div>
+  </div>
+</section>
+
+<!-- ===================== 更新记录 ===================== -->
+<div class="upd" id="upd" hidden>
+  <div class="upd-card" role="dialog" aria-label="更新记录">
+    <div class="upd-head">
+      <div>
+        <div class="upd-title">更新记录</div>
+        <div class="upd-sub">当前版本 <b id="upd-cur">—</b></div>
+      </div>
+      <button class="skeu-key icon-only" id="upd-close" title="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="upd-body no-scrollbar" id="upd-body"></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="assets/vendor/three.min.js" defer></script>
+<script src="assets/js/app.bundle.js" defer></script>
+</body>
+</html>

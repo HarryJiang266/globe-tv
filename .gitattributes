@@ -1,0 +1,16 @@
+# 文本文件统一用 LF 入库并在工作区保持 LF。
+# 不设的话 Git 在 Windows 上会报一堆 "LF will be replaced by CRLF"，
+# 而且工作区与仓库内容换行符不一致，会让 git status 一直显示"被修改"。
+* text=auto eol=lf
+
+# 二进制文件：不做换行符转换，也不显示内容 diff
+*.jpg   binary
+*.jpeg  binary
+*.png   binary
+*.gif   binary
+*.woff  binary
+*.woff2 binary
+*.gz    binary
+
+# 第三方压缩库：体积大、几乎不读 diff，标记为不可 diff
+*.min.js -diff
