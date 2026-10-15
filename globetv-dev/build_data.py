@@ -469,7 +469,10 @@ def main():
         gd = ImageDraw.Draw(grat_l)
         for lon in range(-180, 181, 15):
             gd.line([(px(lon, -90)[0], 0), (px(lon, 90)[0], H2)], fill=255, width=S)
-        for lat in range(-75, 76, 15):
+        # 纬线只画到 ±60°：±75° 那两条在贴图上是横线，但到了球面上、
+        # 视线正对极点时会变成一个以极点为圆心的突兀圆环（用户反馈过）。
+        # 极区保持干净，不要再把范围改回 ±75。
+        for lat in range(-60, 61, 15):
             y = px(0, lat)[1]
             gd.line([(0, y), (W2, y)], fill=255, width=S)
         grat_s = grat_l.resize((W, H), Image.LANCZOS)
