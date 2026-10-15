@@ -428,16 +428,20 @@ def main():
         def px(lon, lat):
             return ((lon + 180.0) / 360.0 * W2, (90.0 - lat) / 180.0 * H2)
 
+        # 陆地上原本还叠了一层 9px 周期的半调网点（dot 变量）。
+        # 用户反馈那片灰色点点很影响观感，已整体移除，陆地现在是纯色块，
+        # 只靠海岸线 / 国界线勾轮廓。不要再加回来。
+        #
         # 颜色取值原则（踩过坑）：不能贴着纯黑或纯白，否则在不同显示链路
         # （HDR 显示器、系统对比度增强）上会被压没。
         # 深色：海洋必须明显亮于页面底色 (#18191b)，地球才不会看成一个黑洞；
         # 浅色：海洋必须明显暗于页面底色 (#e9ebee)，地球才不会在白底上"隐身"。
         if theme == 'dark':
             ocean, land = (27, 35, 44), (50, 58, 68)
-            coast, grat, dot = (206, 232, 224, 120), (255, 255, 255, 18), (176, 210, 204, 34)
+            coast, grat = (206, 232, 224, 120), (255, 255, 255, 18)
         else:
             ocean, land = (148, 162, 178), (208, 215, 224)
-            coast, grat, dot = (26, 56, 52, 140), (30, 48, 64, 24), (30, 66, 60, 44)
+            coast, grat = (26, 56, 52, 140), (30, 48, 64, 24)
 
         mask = Image.new('L', (W2, H2), 0)
         md = ImageDraw.Draw(mask)
@@ -470,18 +474,8 @@ def main():
             gd.line([(0, y), (W2, y)], fill=255, width=S)
         grat_s = grat_l.resize((W, H), Image.LANCZOS)
 
-        dot_l = Image.new('L', (W, H), 0)
-        dd = ImageDraw.Draw(dot_l)
-        step, r = 9, 1.5
-        for y in range(0, H, step):
-            off = (step // 2) if (y // step) % 2 else 0
-            for x in range(off, W, step):
-                dd.ellipse([x - r, y - r, x + r, y + r], fill=255)
-        dot_l = Image.composite(dot_l, Image.new('L', (W, H), 0), mask_s)
-
         base = Image.new('RGB', (W, H), ocean)
         base.paste(Image.new('RGB', (W, H), land), (0, 0), mask_s)
-        base.paste(Image.new('RGB', (W, H), dot[:3]), (0, 0), dot_l.point(lambda v: int(v * dot[3] / 255.0)))
         base.paste(Image.new('RGB', (W, H), grat[:3]), (0, 0), grat_s.point(lambda v: int(v * grat[3] / 255.0)))
         base.paste(Image.new('RGB', (W, H), coast[:3]), (0, 0), line_s.point(lambda v: int(v * coast[3] / 255.0)))
         base.save(path, 'JPEG', quality=85, optimize=True)
