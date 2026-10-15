@@ -397,16 +397,24 @@ def main():
     draw_rings = []          # 闭合环（普通国家）
     coast_lines = []         # (折线, 是否闭合)
     pole_fills = []          # 需要补画到极点的纬度（南极洲）
+    pole_rings = []          # 南极洲 ring：逐列填充用
     for ring in rings:
         ur = unwrap_ring(ring)
         lons = [p[0] for p in ur]
         if max(lons) - min(lons) >= 350:
             # 环绕极点的环（南极洲）：数据用一条贴着最低纬度的人为闭合边收口。
             # 直接画会有两个问题：极点被涂成海洋、冰盖中间多出一条假海岸线。
-            # 处理办法：把那条人为边切掉，海岸按开口折线画，另外补一块到极点的填色。
+            # 处理办法：海岸按开口折线画（切掉人为边）；
+            # 填色在 render_texture 里逐列处理（见 pole_rings）。
+            #
+            # ⚠️ 填色不能只靠 polygon 奇偶填充 + minla 以下的矩形：人为闭合边
+            # 和真实海岸最低点之间会漏出一条横贯全图的海洋色带，球面上就是
+            # 极点旁一圈突兀的暗环（用户反馈过）；而且海岸下探最深处
+            # （罗斯冰架一带）扫描线交点为偶数，奇偶填充照样漏。
             minla = min(p[1] for p in ur)
             pole_fills.append(minla)
-            draw_rings.extend(copies(ur))      # 填色照旧（只是不再描那条人为边）
+            pole_rings.append(ur)
+            draw_rings.extend(copies(ur))
             run = []
             for pt in ur:
                 if pt[1] <= minla + 0.02:
@@ -451,6 +459,28 @@ def main():
                 md.polygon(poly, fill=255)
         for la in pole_fills:                      # 南极洲：一直填到极点
             md.polygon([px(-180, la), px(180, la), px(180, -90), px(-180, -90)], fill=255)
+        # 南极洲逐列填充：每个经度上，从最南海岸点一直填到贴图底边。
+        # 奇偶填充在极区会被人为闭合边和下探的海岸搅出漏带（球面上是
+        # 极点旁的暗环），这里利用「南极洲在每个经度上都连着极点」的
+        # 地理事实按列兜全，不依赖奇偶判定。
+        for pring in pole_rings:
+            pts = [px(lo, la) for lo, la in pring]
+            n = len(pts)
+            col_y = {}
+            for i in range(n):
+                x1, y1 = pts[i]
+                x2, y2 = pts[(i + 1) % n]
+                if x1 == x2:
+                    continue
+                if x2 < x1:
+                    x1, y1, x2, y2 = x2, y2, x1, y1
+                span = x2 - x1
+                for xi in range(max(0, int(x1)), min(W2, int(x2) + 1)):
+                    yy = y1 + (y2 - y1) * ((xi + 0.5 - x1) / span)
+                    if yy > col_y.get(xi, -1.0):
+                        col_y[xi] = yy
+            for xi, yy in col_y.items():
+                md.line([(xi, yy), (xi, H2)], fill=255)
         mask_s = mask.resize((W, H), Image.LANCZOS)
 
         line = Image.new('L', (W2, H2), 0)
