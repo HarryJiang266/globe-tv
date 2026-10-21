@@ -18,11 +18,25 @@
    城市名交给 GeoNames 查坐标，不用手填经纬度。
 """
 import io
+import json
 import math
 import os
 import random
 import re
 import zipfile
+
+# 频道名 / Wikidata 标签归一化（import_wikidata.py 也用这一份）
+NOISE = re.compile(r"[^0-9a-z\u4e00-\u9fff]+")
+SUFFIX = re.compile(r"\b(tv|television|channel|network|canal|televisao|televizija|"
+                    r"hd|sd|uhd|4k|live|online|international|intl|world)\b")
+
+
+def norm(s):
+    if not s:
+        return ''
+    s = NOISE.sub(' ', s.lower().strip())
+    s = SUFFIX.sub(' ', s)
+    return re.sub(r'\s+', ' ', s).strip()
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.environ.get('GLOBETV_CACHE') or os.path.join(ROOT, '.globetv-cache')
@@ -532,13 +546,46 @@ def city_weighted_points(cc, n, seed=0, radius_deg=0.5):
     return pts
 
 
+_WIKI = None
+
+
+def _wiki_index():
+    """Wikidata 索引（wikidata_index.json），不存在返回空字典。"""
+    global _WIKI
+    if _WIKI is None:
+        p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'wikidata_index.json')
+        if os.path.exists(p):
+            with open(p, encoding='utf-8') as f:
+                _WIKI = json.load(f)
+        else:
+            _WIKI = {}
+    return _WIKI
+
+
 def resolve(network, owners, name, alt_name, cc):
     """返回 (kind, lat, lon, label)：
-         kind: 'city' 城市级 / 'org' 机构级 / 'fast' 虚拟频道 / None 无法定位
+         kind: 'wiki' Wikidata 真实台址 / 'city' 城市级 / 'org' 机构级
+               / 'fast' 虚拟频道 / None 无法定位
     """
     net = (network or '').strip()
     ows = [o for o in (owners or []) if o]
     orgs = ([net] if net else []) + ows
+
+    # 0) Wikidata 真实台址：最可信，命中就用它
+    #    索引由 import_wikidata.py 生成（本机访问不了 Wikidata，只能离线导入）
+    w = _wiki_index()
+    if w:
+        for text in (name, alt_name):
+            cand = w.get(norm(text))
+            if not cand:
+                continue
+            pick = next((e for e in cand if e[2] == cc), None)
+            if pick is None and not any(e[2] for e in cand) and len(cand) == 1:
+                pick = cand[0]          # 没标国家且全表唯一，可以用
+            if pick is None and len(cand) == 1:
+                pick = cand[0]
+            if pick is not None:
+                return ('wiki', pick[0], pick[1], 'Wikidata: ' + (text or ''))
 
     # 1) 城市级：频道名/别名里直接写了城市（这是最可信的"该台在哪儿"）
     got = find_city_in_text(name, cc) or find_city_in_text(alt_name, cc)

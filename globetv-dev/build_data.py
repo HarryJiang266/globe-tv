@@ -327,7 +327,7 @@ def main():
                 c.get('network'), c.get('owners'), c['name'],
                 (c.get('alt_names') or [None])[0] or '', cc)
             stat[kind or 'none'] += 1
-            resolved.append((la, lo, kind) if (kind in ('city', 'org') and la is not None)
+            resolved.append((la, lo, kind) if (kind in ('city', 'org', 'wiki') and la is not None)
                             else (None, None, kind or 'none'))
 
         result = [None] * n
@@ -380,14 +380,15 @@ def main():
             # 0 不写字段，省一点体积；前端用 (ch.p || 0) 读
             if kind == 'fast':
                 rec['p'] = 2
-            elif kind != 'city' and kind != 'org':
+            elif kind not in ('city', 'org', 'wiki'):
                 rec['p'] = 1
             out_channels.append(rec)
         country_out[cc] = {'n': cc_info[cc]['n'], 'f': cc_info[cc]['f'],
                            'la': round(latlng[cc][0], 3), 'lo': round(latlng[cc][1], 3), 'c': n}
     tot = sum(stat.values()) or 1
-    print('坐标定位  城市级 %d (%.1f%%) / 机构级 %d (%.1f%%) / 城市加权兜底 %d (%.1f%%)'
-          % (stat['city'], stat['city'] * 100.0 / tot,
+    print('坐标定位  Wikidata %d (%.1f%%) / 城市级 %d (%.1f%%) / 机构级 %d (%.1f%%) / 城市加权兜底 %d (%.1f%%)'
+          % (stat['wiki'], stat['wiki'] * 100.0 / tot,
+             stat['city'], stat['city'] * 100.0 / tot,
              stat['org'], stat['org'] * 100.0 / tot,
              stat['none'] + stat['fast'], (stat['none'] + stat['fast']) * 100.0 / tot))
     print('          其中无实体台址的虚拟频道 %d 个；无城市数据退回旧撒点 %d 个'
