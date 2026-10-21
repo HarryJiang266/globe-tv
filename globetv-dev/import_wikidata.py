@@ -56,20 +56,62 @@ def main():
 
     cmap = load_country_map()
     index = {}          # norm_name -> [[lat, lon, cc], ...]
+    orgs = {}           # norm机构名 -> [[lat, lon, cc], ...]
     n_rows = n_ok = 0
+
+    # ---- 机构总部坐标（wikidata_orgs_*.json，按我们自己的机构名查出来的）
+    for path in sorted(glob.glob(os.path.join(CACHE, 'wikidata_orgs*.json'))):
+        with open(path, encoding='utf-8') as f:
+            data = json.load(f)
+        if isinstance(data, dict):
+            rows = data['results']['bindings']
+            val = lambda r, k: (r.get(k) or {}).get('value')        # noqa: E731
+        else:
+            rows = data
+            val = lambda r, k: r.get(k)                              # noqa: E731
+        print('%s  %d 行' % (os.path.basename(path), len(rows)))
+        for r in rows:
+            coord = parse_coord(val(r, 'coord'))
+            if not coord:
+                continue
+            cc = cmap.get((val(r, 'countryLabel') or '').lower(), '')
+            for nm in [val(r, 'name'), val(r, 'itemLabel'), val(r, 'alts')]:
+                if not nm:
+                    continue
+                for one in (nm.split('|') if '|' in nm else [nm]):
+                    key = norm(one)
+                    if len(key) < 3:
+                        continue
+                    entry = [round(coord[0], 4), round(coord[1], 4), cc]
+                    b = orgs.setdefault(key, [])
+                    if entry not in b:
+                        b.append(entry)
+    if orgs:
+        with open(os.path.join(os.path.dirname(OUT), 'wikidata_orgs.json'), 'w', encoding='utf-8') as f:
+            json.dump(orgs, f, ensure_ascii=False, separators=(',', ':'))
+        print('机构坐标索引 %d 条 -> wikidata_orgs.json' % len(orgs))
+
     for path in files:
         with open(path, encoding='utf-8') as f:
             data = json.load(f)
-        rows = data['results']['bindings']
+        # 两种格式都吃：
+        #   标准 SPARQL JSON  -> {"results": {"bindings": [{"item": {"value": ...}}]}}
+        #   WDQS 下载的简化版 -> [{"item": "...", "itemLabel": "..."}, ...]
+        if isinstance(data, dict):
+            rows = data['results']['bindings']
+            val = lambda r, k: (r.get(k) or {}).get('value')      # noqa: E731
+        else:
+            rows = data
+            val = lambda r, k: r.get(k)                            # noqa: E731
         print('%s  %d 行' % (os.path.basename(path), len(rows)))
         for r in rows:
             n_rows += 1
-            coord = parse_coord((r.get('coord') or {}).get('value'))
+            coord = parse_coord(val(r, 'coord'))
             if not coord:
                 continue
-            cc = cmap.get(((r.get('countryLabel') or {}).get('value') or '').lower(), '')
-            names = [(r.get('itemLabel') or {}).get('value')]
-            names += [a for a in ((r.get('alts') or {}).get('value') or '').split('|') if a]
+            cc = cmap.get((val(r, 'countryLabel') or '').lower(), '')
+            names = [val(r, 'itemLabel')]
+            names += [a for a in (val(r, 'alts') or '').split('|') if a]
             for nm in names:
                 key = norm(nm)
                 if len(key) < 3:
@@ -92,10 +134,11 @@ def main():
     hit = 0
     for c in chs:
         for key in (norm(c['n']), norm(c.get('a') or '')):
-            if key and key in index:
+            cand = index.get(key) if key else None
+            if cand and any(e[2] == c['c'] for e in cand):
                 hit += 1
                 break
-    print('试匹配：现有 %d 个频道里能直接对上 Wikidata 的 %d 个 (%.1f%%)'
+    print('试匹配（严格同国）：现有 %d 个频道里能对上的 %d 个 (%.1f%%)'
           % (len(chs), hit, hit * 100.0 / len(chs)))
     return 0
 

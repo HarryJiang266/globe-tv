@@ -1,0 +1,193 @@
+# 第 9 批（180 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      "Gobierno del Estado de Puebla"@en
+      "Universidad Veracruzana"@en
+      "Government of the State of Sonora"@en
+      "Benemérita Universidad Autónoma de Puebla"@en
+      "Universidad de Guanajuato"@en
+      "Universidad Autónoma de Aguascalientes"@en
+      "Universidad Autónoma de Ciudad Juárez"@en
+      "Universidad de Guadalajara"@en
+      "Ultra FM"@en
+      "TVMÁS"@en
+      "Grupo Intermedia"@en
+      "Grupo Altura"@en
+      "Grupo Antena 1"@en
+      "Movimiento Misionero Mundial"@en
+      "Canal 21"@en
+      "Grupo CTC"@en
+      "Chasqui Router"@en
+      "Jockey Club del Peru"@en
+      "Easy Telecom SAC"@en
+      "Nativa TV"@en
+      "Grupo Onda"@en
+      "Onda Grupo de Medios"@en
+      "Ozono Networks"@en
+      "Planea Tv Amazonas & Jaén"@en
+      "Grupo Onda Radio"@en
+      "Corporación de Comunicación Canal Real S.A.C."@en
+      "Radio Mega Satipo"@en
+      "Grupo Telesystem"@en
+      "Gobierno del Perú"@en
+      "Universidad de San Martin de Porres"@en
+      "China Meteorological Administration"@en
+      "Shanghai Media Group"@en
+      "Fujian Media Group"@en
+      "Hunan Golden Eagle Cartoon Media"@en
+      "Hunan Broadcasting System"@en
+      "Agro TV Network SRL"@en
+      "Alfa Omega TV Production SRL"@en
+      "FTV"@en
+      "B1 TV Channel SRL"@en
+      "ISG Media"@en
+      "TVSAT Media Group"@en
+      "Dotto TV Media"@en
+      "Impact TV România"@en
+      "Antenna Entertainment"@en
+      "Digital Antena Group"@en
+      "Florentin Pandele"@en
+      "RCS and RDS"@en
+      "Radu Moraru"@en
+      "Nova Press"@en
+      "SC Best Mixmedia SRL"@en
+      "Romanian Radio Broadcasting Company"@en
+      "Ridzone Computers"@en
+      "Sud Media Production Srl"@en
+      "TVR"@en
+      "Societatea Română de Televiziune"@en
+      "NBCUniversal International Networks"@en
+      "Sky Group"@en
+      "Extreme International"@en
+      "Fox Networks Group Polska Sp. zo.o"@en
+      "SPI International Polska"@en
+      "TVO"@en
+      "Tvokazje"@en
+      "Cyfrowy Polsat S.A."@en
+      "Polsat Seriale"@en
+      "Polskie Radio"@en
+      "Stopklatka SA"@en
+      "Agora SA"@en
+      "Kino Polska TV"@en
+      "Első Roma Média Kft."@en
+      "Bertelsmann Verwaltungsgesellschaft mbH"@en
+      "AETN UK"@en
+      "Kecskeméti Televízió Nonprofit Korlátolt"@en
+      "The Tematic Media Group"@en
+      "TV2 Média Csoport Kft"@en
+      "MTV Networks s.r.o."@en
+      "Digital Technika s.r.o."@en
+      "Tematic Media Group"@en
+      "Fishing & Hunting Tematic SRL"@en
+      "Akwan Media"@en
+      "Intermedia Capital"@en
+      "Digdaya Media Nusantara"@en
+      "B Universe"@en
+      "PT Trans Berita Bisnis"@en
+      "Skydance International"@en
+      "PT Dhoho Media Televisi"@en
+      "Bahasa Indonesia"@en
+      "Efarina Etaham Group"@en
+      "PT. MNC Televisi Network"@en
+      "MNC Vision Networks"@en
+      "KSTV Kediri"@en
+      "PT Cipta Megaswara Televisi"@en
+      "KG Media"@en
+      "PT. Lingkar Taqwa Vision"@en
+      "PT Ma'dinul Ulum Media Television"@en
+      "Media Group"@en
+      "Surya Paloh"@en
+      "Media Gema Islam Televisi"@en
+      "Media Nusantara Citra"@en
+      "Elang Mahkota Teknologi"@en
+      "Yayasan An-Naajiya Pasaman Barat"@en
+      "NT Corp"@en
+      "PT. Indek Media Terpercaya"@en
+      "RinjaniTV"@en
+      "SatuRadio"@en
+      "Salira Info Utama"@en
+      "PT Media Sampit Televisi"@en
+      "Suara Surabaya Media"@en
+      "PT Radio Fiskaria Jaya Suara Surabaya"@en
+      "TVRI"@en
+      "Channel Zero"@en
+      "St. Andrews Community Channel"@en
+      "Jim Pattison Group"@en
+      "CHUM Limited"@en
+      "Rogers Communications"@en
+      "Shuprioti Innvations Inc."@en
+      "Tamil Entertainment Television"@en
+      "Wells Multimedia Entertainment"@en
+      "Fantasy Sports Media Group Inc."@en
+      "Gusto Media Worldwide"@en
+      "A Parent Media Co Inc"@en
+      "Knowledge Network Corporation"@en
+      "Groupe TVA"@en
+      "Kino Lorber"@en
+      "Stirling Communications International"@en
+      "Pelmorex"@en
+      "Le Consortium de télévision Québec Canada"@en
+      "Quebecor Media"@en
+      "Nunavut Independent Television Network"@en
+      "Wild TV Inc."@en
+      "Centro Mundial de Avivamiento"@en
+      "Obra del Movimiento Misionero Mundial"@en
+      "Der Medios & Marketing"@en
+      "Alpavisión"@en
+      "Iglesia Centro Cristiano de Amor y Fe"@en
+      "Arquidiócesis de Tunja"@en
+      "Medios Alternativos Radio y Televisión Colombia"@en
+      "Citytv"@en
+      "El Tiempo Casa Editorial"@en
+      "Centro Misionero Bethesda"@en
+      "Producciones Gil"@en
+      "Producciones Cosmovision"@en
+      "Fundación Cristovisión"@en
+      "Alfonso Uribe Torres"@en
+      "Iglesia Centro Cristiano"@en
+      "Kalu Telecomunicaciones"@en
+      "ARNOProducciones"@en
+      "MCI Radio"@en
+      "MCI INC."@en
+      "Telepacific"@en
+      "Centro de Alabanza Oasis"@en
+      "StreamForce 360 Grados S.A.S."@en
+      "Universidad La Gran Colombia"@en
+      "Fundación Organización VID"@en
+      "Gobernación de Antioquia"@en
+      "Gobernación de Caldas"@en
+      "Gobernación del Quindío"@en
+      "Gobernación de Risaralda"@en
+      "Gobernación del Valle del Cauca"@en
+      "P&C SAS"@en
+      "Asociación Colombiana de Universidades"@en
+      "Aftab Network Co."@en
+      "North Khorasan Radio and Television"@en
+      "Mostafa Bayram"@en
+      "Gilan Radio and Television"@en
+      "EkranMovies Group"@en
+      "Saba Media Center"@en
+      "Kish Radio and Television"@en
+      "City News Network Mohsin Naqvi"@en
+      "Mian Muhammad Hanif"@en
+      "Sports Star International"@en
+      "Recorder Television Network"@en
+      "Apna Group"@en
+      "Ausaf Media Group"@en
+      "Shalimar Recording & Broadcasting"@en
+      "Kamran Hamid Raja"@en
+      "City News Network"@en
+      "Kaiser Rafiq"@en
+      "Mian Amer Mehmood"@en
+      "Lakson Group"@en
+      "Geo Television"@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel

@@ -1,0 +1,193 @@
+# 第 4 批（180 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      "Anixe HD Television GmbH"@en
+      "Bayerischer Rundfunk"@en
+      "Gospel Ministries International"@en
+      "WeltN24 GmbH"@en
+      "News 360"@en
+      "Niederbayern TV Programm und Werbe GmbH"@en
+      "Fundação Padre Anchieta"@en
+      "x1co"@en
+      "Rede CNT"@en
+      "Canais SBT"@en
+      "Roberto Dorner"@en
+      "Rede SIM"@en
+      "Parole di Vita"@en
+      "Class Editori"@en
+      "Corporació Valenciana de Mitjans de Comunicació"@en
+      "SelectaVision"@en
+      "Atresmedia Corporación de Medios de Comunicación SA"@en
+      "Love Crime & History"@en
+      "Televisio de Catalunya"@en
+      "Real Madrid Club de Fútbol"@en
+      "Banco Popular Dominicano"@en
+      "Grupo Corripio"@en
+      "Republica Dominicana"@en
+      "Suyai TV"@en
+      "Media 23 SpA"@en
+      "PUCV Multimedios SpA"@en
+      "r8Dio ApS"@en
+      "The Walt Disney Company Limited"@en
+      "Channel Four Television Corporation"@en
+      "Chs.Tv Limited"@en
+      "FIFA"@en
+      "Narrative Entertainment UK Ltd"@en
+      "London Tamil Media Ltd"@en
+      "Rights Booster Limited"@en
+      "Go See TV"@en
+      "Banijay Rights"@en
+      "Viasat World"@en
+      "Turkuvaz Media Group"@en
+      "Albayrak Media Group"@en
+      "Mediawan Thematics"@en
+      "Africanews"@en
+      "NextRadioTV"@en
+      "TF1 Group"@en
+      "Mezzo SA"@en
+      "Paramount Networks France"@en
+      "TV5Monde S.A."@en
+      "Kasumay France"@en
+      "Azéna Médias"@en
+      "SPI International Inc."@en
+      "Omroep Brabant"@en
+      "Talpa Network"@en
+      "Atlant-SV"@en
+      "FILM.UA Group"@en
+      "FilmUA Group"@en
+      "Maincast"@en
+      "Igor Petrenko"@en
+      "Rudolph Kirnos"@en
+      "Karina Torres"@en
+      "Canal 79 Reporte y Clima"@en
+      "Grupo Clarin"@en
+      "TV Azteca Internacional"@en
+      "Media Sports de México S.A. de C.V."@en
+      "Grupo SIPSE"@en
+      "VB MEDIA QUERETARO"@en
+      "America Multimedia"@en
+      "Corporation Universal"@en
+      "Federación Peruana de Fútbol"@en
+      "Ministry of Education of the People's Republic of China"@en
+      "China Xinhua News Network Corporation"@en
+      "HBS"@en
+      "Central European Media Enterprises"@en
+      "Aleph Group"@en
+      "Atomic Media Advertising"@en
+      "Dogan Media International SA"@en
+      "AMC GLOBAL MEDIA"@en
+      "Centrul Național Media"@en
+      "Clever Group"@en
+      "Pro TV"@en
+      "Pro TV SRL"@en
+      "Telewizja Puls"@en
+      "ATV Zrt."@en
+      "Media Vivantis Zrt."@en
+      "Magyar RTL Televízió Zrt."@en
+      "FOX Networks Group"@en
+      "AXN Europe Limited"@en
+      "Surya Citra Media"@en
+      "Kementerian Komunikasi dan Informatika Republik Indonesia"@en
+      "MNC Media"@en
+      "LPP TVRI"@en
+      "Blue Ant Media"@en
+      "Canada Love"@en
+      "Capital Sistema de Comunicación Pública de Bogotá"@en
+      "Gobernación de Santander"@en
+      "Gobernación del Norte de Santander"@en
+      "HV Multiplay"@en
+      "Televisión Regional de Islas y Providencia"@en
+      "RTVC Sistema de Medios Públicos"@en
+      "Gobernación del Atlántico"@en
+      "Gobernación de Bolívar"@en
+      "Gobernación del Cesar"@en
+      "Gobernación de Córdoba"@en
+      "Gobernación de La Guajira"@en
+      "Gobernación de Magdalena"@en
+      "Gobernación del Sucre"@en
+      "DirecTV"@en
+      "Government of Iran"@en
+      "Business Recorder Group"@en
+      "Ahmed Hussain"@en
+      "ARY Digital Network"@en
+      "ARY Group"@en
+      "Hum Network Limited"@en
+      "Pakistan Television Corporation"@en
+      "Dolphin Media House"@en
+      "Grupo Alvarado Roca"@en
+      "MakroDigital Television"@en
+      "Sistemas Globales de Comunicacion HCGLOBAL S.A."@en
+      "Hanoi People's Committee"@en
+      "CJ Group"@en
+      "GS Home Shopping Inc"@en
+      "Hyundai Home Shopping Network Group"@en
+      "Sistema Bolivariano de Comunicación e Información"@en
+      "Grupo Trust Mediático"@en
+      "New Television S.A."@en
+      "Acción Multimedios"@en
+      "Grupo Nación Media"@en
+      "Grupo Vierci"@en
+      "Grupo JBB"@en
+      "Kurdistan Democratic Party"@en
+      "Telekom Srbjia"@en
+      "Saudi TV"@en
+      "Saudi Broadcasting Authority (SBA)"@en
+      "John Momoh"@en
+      "TRK Yuzhnaya Stolicza"@en
+      "Maxim Media Plus d.o.o."@en
+      "Radoica Milosavljević"@en
+      "Europe by Satellite"@en
+      "RTBF"@en
+      "ABC Television"@en
+      "Community Television Broadcasting Ltd"@en
+      "Red Salvadoreña de Medios"@en
+      "Grupo Megavisión"@en
+      "Sky News Arabia FZ LLC"@en
+      "Sky Limited"@en
+      "RGE Group"@en
+      "Keshet Media Group"@en
+      "Panorama Group"@en
+      "Macedonian Radio Television"@en
+      "S. Alam Group of Industries"@en
+      "Government of Cambodia"@en
+      "CGN"@en
+      "Christian Global network"@en
+      "Taiwan Broadcasting System"@en
+      "Tzu Chi"@en
+      "Eastern Television"@en
+      "Nelonen Media"@en
+      "Sanoma Media Finland"@en
+      "MTV Oy"@en
+      "Compañía Digital de Televisión"@en
+      "Tropical Moon"@en
+      "Raul Chevalier"@en
+      "TVN Media"@en
+      "KC Global Media"@en
+      "HBO Asia"@en
+      "Ministry of Education"@en
+      "ERR"@en
+      "Government of Jordan"@en
+      "Azerbaijan Television and Radio Broadcasting Closed Joint-stock Company"@en
+      "Celestial Tiger Entertainment"@en
+      "Phoenix Television"@en
+      "Stolichnoe Televidenie"@en
+      "Coptic Orthodox Church of Alexandria"@en
+      "Al Rayyan Media"@en
+      "TNT Group"@en
+      "Radiotelevizija Republike Srpske"@en
+      "Government of Cameroon"@en
+      "MOBY Group"@en
+      "312 TV"@en
+      "TUZ.KG"@en
+      "Prage Management Corporation"@en
+      "Christian Era Broadcasting Service International"@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel

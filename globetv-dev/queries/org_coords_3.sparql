@@ -1,0 +1,193 @@
+# 第 3 批（180 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      "FilmRise"@en
+      "Radial Entertainment"@en
+      "Oaktree Capital Management L.P."@en
+      "Fisher Klingenstein Ventures"@en
+      "Jus Broadcasting"@en
+      "Weigel Broadcasting"@en
+      "National Geographic Partners LLC."@en
+      "Newsmax Media"@en
+      "Trinity Broadcasting Network"@en
+      "S Plus Group"@en
+      "Showtime Networks Inc."@en
+      "XITE Networks USA Inc."@en
+      "XITE Networks Netherlands BV"@en
+      "India Today Group"@en
+      "TV Today Network Ltd"@en
+      " Living Media India Limited"@en
+      "iTV Network"@en
+      "Information TV Private Limited"@en
+      "Kartikeya Sharma"@en
+      "Charhdikala Media Group"@en
+      "Enterr10"@en
+      " Ramoji Group"@en
+      "Galactic Television & Communications Pvt Ltd."@en
+      "Bibi George Chacko"@en
+      "Independent News Service Pvt Ltd (INSPL)"@en
+      "News Nation Network Pvt Ltd"@en
+      "NK Power and Infrastructure Pvt. Ltd."@en
+      "Cobol Communication Pvt. Ltd."@en
+      "Writemen Media Private Limited"@en
+      "VXDGroup Network"@en
+      "Time Media Group"@en
+      "Star Media"@en
+      "Signal Media"@en
+      "ООО Теледистрибьюция"@en
+      "Media-1"@en
+      "Viasat"@en
+      "Home Shopping Europe GmbH"@en
+      "Norddeutscher Rundfunk"@en
+      "RTL Group S.A."@en
+      "Südwestrundfunk"@en
+      "Grupo Bandeirantes de Comunicacao"@en
+      "Canais Globo"@en
+      "RedeTV!"@en
+      "SBT"@en
+      "Peer TV"@en
+      "Peer GmbH / SRL"@en
+      "RTVE SA"@en
+      "CRTVG"@en
+      "Televiaducto S.A."@en
+      "EnerGeek"@en
+      "Productora EnerGeek Limitada"@en
+      "Sveriges Television"@en
+      "A+E Networks EMEA"@en
+      "ITV"@en
+      "ITV plc"@en
+      "Demiroren Group"@en
+      "Constant Nemale"@en
+      "Starlight Media"@en
+      "Grupo America"@en
+      "Televisión Azteca"@en
+      "National Institute of Radio and Television of Peru"@en
+      "RCS & RDS"@en
+      "Cristinal Popa and Ionut Samoila"@en
+      "MWE Networks"@en
+      "CLT-UFA SA"@en
+      "Stara TV"@en
+      "Jawa Pos Group"@en
+      "IndiHome"@en
+      "MT Entertainment"@en
+      "Dawat-e-Islami"@en
+      "Comunica EP"@en
+      "An Giang Radio - Television Station"@en
+      "CầnThơ TV"@en
+      "Dong Nai Radio - Television Station"@en
+      "Korea International Broadcasting Foundation"@en
+      "Korean Broadcasting System"@en
+      "Grupo Lorini"@en
+      "RUBI"@en
+      "UMSA"@en
+      "Canal Peniel"@en
+      "The Walt Disney Company Bulgaria"@en
+      "RTVS"@en
+      "Arab Media Corporation"@en
+      "Network 10"@en
+      "Direct Group Pty Ltd"@en
+      "Israel Television News Company"@en
+      "MTV Lebanon"@en
+      "MTV SAL"@en
+      "Formosa Television Inc."@en
+      "TVBS"@en
+      "Yle"@en
+      "Impact Media Consortium"@en
+      "Media Prima"@en
+      "Vantage Television"@en
+      "Gobierno de Nicaragua"@en
+      "Television Broadcasts Limited"@en
+      "RTV Slovenia"@en
+      "Cyprus Broadcasting Corporation"@en
+      "National Broadcasting Corporation of the Kyrgyz Republic"@en
+      "Medi1TV"@en
+      "CDG"@en
+      "Tanzania Broadcasting Corporation"@en
+      "Government of Malta"@en
+      "ICRT"@en
+      "Korean Central Broadcasting Committee"@en
+      "Black Entertainment Television LLC"@en
+      "Allen Media Group"@en
+      "Bloomberg L.P."@en
+      "Michael Bloomberg"@en
+      "Bank of America"@en
+      "Skydance TV Media"@en
+      "CMC Broadcasting Company Incorporated"@en
+      "The Universal Church Inc."@en
+      "CBS Sports"@en
+      "Nexstar Media Group"@en
+      "NBCUniversal Media LLC"@en
+      "Grupo Werthein"@en
+      "EBS Television Global"@en
+      "El Sembrador Ministries"@en
+      "FloSports"@en
+      "Sony Pictures Television Networks"@en
+      "Guyana TV Network"@en
+      "R&C Media Group Inc"@en
+      "Hallmark Cards"@en
+      "IFC"@en
+      "ION Media Networks Inc."@en
+      "Multimedia Commerce Group Inc"@en
+      "2BeNamed"@en
+      "Armenian"@en
+      "Bagrat Sargsyan"@en
+      "Channel 38 Christian Television"@en
+      "Heart4Iran Ministries"@en
+      "National Iranian Congress"@en
+      "American Public Television"@en
+      "Orbit Media"@en
+      "Lucas Oil"@en
+      "Shalom Media USA Inc"@en
+      "SNI/SI Networks L.L.C."@en
+      "Smithsonian Institution"@en
+      "Telemundo"@en
+      "TLN Media"@en
+      "Fair Play Broadcasting LLC"@en
+      "Willow"@en
+      "Times Internet (UK) Ltd."@en
+      "Asianet"@en
+      "Asianet News"@en
+      "Asianxt Digital Technologies"@en
+      "Asianet News Network"@en
+      "Jupiter Capital"@en
+      "Viacom18"@en
+      "Brahmaputra Tele Productions Pvt. Ltd."@en
+      "GTC Network"@en
+      "India TV"@en
+      "DV Media & Entertainment Pvt. Ltd."@en
+      "Malayala Manorama Television"@en
+      "Malayala Manorama Television (MMTV) Ltd."@en
+      "Olecom Media"@en
+      "B A G Network"@en
+      "A M Television Pvt. Ltd."@en
+      "SRM Group"@en
+      "Shivashri Media Private Limited"@en
+      "Russian Federation"@en
+      "Samsung India Electronics Pvt. Ltd."@en
+      "Sun TV Network"@en
+      "Celebrities Management Private Limited"@en
+      "TV5"@en
+      "Shreya Broadcasting Pvt. Ltd."@en
+      "YET+"@en
+      "YET Television"@en
+      "First TVCH"@en
+      "Feniks-Tver"@en
+      "UniverKidz"@en
+      "1TVCH"@en
+      "Commonwealth of Independent States"@en
+      "Mediamart"@en
+      "Moscow Media"@en
+      "Content Union"@en
+      "TV-Novosti"@en
+      "Russkaya Mediagruppa"@en
+      "START Media TV"@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel

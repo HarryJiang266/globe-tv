@@ -1,0 +1,193 @@
+# 第 7 批（180 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      "TV Oberfranken GmbH & Co. KG"@en
+      "Vox Television GmbH"@en
+      "Westdeutscher Rundfunk Köln"@en
+      "Bandeirantes Group"@en
+      "Historical Cities Foundation"@en
+      "Grupo Atitudenew"@en
+      "Rede Canal 10"@en
+      "Rede Futura"@en
+      "Fundacao Roberto Marinho"@en
+      "Sistema Unico de Saude"@en
+      "DMD"@en
+      "Conecta Mais Ltda"@en
+      "Despertar TV"@en
+      "Stenna International LLC"@en
+      "GlobioSAT"@en
+      "Sistema On de Comunicacoes LTDA"@en
+      "Antonio Augusto Amaral de Carvalho Filho"@en
+      "Laboral SST"@en
+      "Rodrigo Lamore"@en
+      "Box Brazil"@en
+      "Valmir Miranda"@en
+      "Band"@en
+      "Grupo Record"@en
+      "Rede Mundo de Comunicação"@en
+      "Instituto Brasileiro de Comunicação Cristã"@en
+      "Devaur Menossi"@en
+      "Fundação Internacional de Comunicação"@en
+      "Sistema Brasileiro de Televisão"@en
+      "Times Brasil"@en
+      "Attention Economics"@en
+      "Empresa Brasil de Comunicação"@en
+      "Brazilian Chamber of Deputies"@en
+      "TV Globo"@en
+      "TV GRANDE NATAL HDTV BRASIL"@en
+      "Brazilian Judicial Branch"@en
+      "Universidade Federal de Ouro Preto"@en
+      "Rossi Costruttori"@en
+      "Gruppo Pucci"@en
+      "Forti Holding S.p.A."@en
+      "Giorgio Tacchino"@en
+      "GMC"@en
+      "Gruppo Sciscione"@en
+      "Sesaab"@en
+      "ProdAction"@en
+      "Mediasat"@en
+      "Mediaset"@en
+      "GEDI Publishing Group"@en
+      "DellaTV Network"@en
+      "Espansione S.r.l."@en
+      "Esperia TV S.r.l."@en
+      "Gambero Rosso International"@en
+      "Giglio Group"@en
+      "FC Internazionale Milano"@en
+      "Mediaset Italia"@en
+      "RAI"@en
+      "Juwelo Italia S r l"@en
+      "Cairo Communication"@en
+      "SS Lazio"@en
+      "Le Cronache SRL"@en
+      "Exor"@en
+      "Reti Televisive Italiane S.p.A."@en
+      "Giorgio Mendella"@en
+      "Gold TV"@en
+      "The Capuchin Friars of the Religious Province of Sant'Angelo"@en
+      "QVC Italia Srl"@en
+      "Radio Italia Group"@en
+      "Norba Group"@en
+      "Italian Sport Communication"@en
+      "De Agostini"@en
+      "Sportcast Srl"@en
+      "Telechiara Videomedia"@en
+      "Netweek SpA"@en
+      "CEI"@en
+      "Videomedia"@en
+      "Università telematica internazionale UniNettuno"@en
+      "Agencia EFE"@en
+      "Europa Press"@en
+      "CARTV−Televisión Autonómica de Aragón S.A."@en
+      "Sony Networks"@en
+      "Ens Públic de Radiotelevisió de les Illes Balears"@en
+      "Consorcio del Mar Menor"@en
+      "Canal33"@en
+      "Grup4"@en
+      "Radio Difusión Tore"@en
+      "CEXMA"@en
+      "Congress of Deputies"@en
+      "Love the Planet"@en
+      "Castilla-La Mancha Media"@en
+      "RBA Revistas S.L."@en
+      "Intereconomia Corporation"@en
+      "Love TV"@en
+      "Love TV Channels"@en
+      "Grupo Godó"@en
+      "Promecal"@en
+      "Love The Planet"@en
+      "Olympic Channel Services S L"@en
+      "Cadena Pirenaica de Ràdio i Televisió"@en
+      "Grup Televisió RHV"@en
+      "Grupo 7 Audiovisuales S.L."@en
+      "Radio Televisión Madrid"@en
+      "Televisió de Catalunya"@en
+      "Love Travel & Taste"@en
+      "ACD Media"@en
+      "Grupo Lopez"@en
+      "Canal del Sol"@en
+      "CERTV"@en
+      "Bermúdez family"@en
+      "Grupo Rizek"@en
+      "Digital Vision Canal 63 S A Uhf Hoy"@en
+      "Musavision S.R.L."@en
+      "Naranja TV Dominicana S R L"@en
+      "Ready TV"@en
+      "Supercanal S.A."@en
+      "Empresas Radiofónicas S.A."@en
+      "Telemedios Dominicana S. A."@en
+      "Grupo de Medios Telemicro"@en
+      "Vozz Media Network"@en
+      "TVN"@en
+      "Secuoya Chile"@en
+      "Diócesis de San Bernardo"@en
+      "Diferencia Radio TV S.p.A."@en
+      "Diario El Centro"@en
+      "Consorcio Eva"@en
+      "Iglesia del Señor Apostólica de Punta Arenas"@en
+      "Alejandro Martini Iriarte"@en
+      "Maqui Online Radio"@en
+      "Iglesia Adventista del Séptimo Día"@en
+      "Concepción"@en
+      "Grupo Media"@en
+      "Voz Camara SpA"@en
+      "Agrupación de Audiovisualistas de Pichilemu"@en
+      "Polar Comunicaciones"@en
+      "OUTtv"@en
+      "Fundación Armonía"@en
+      "Retro Plus"@en
+      "Solo Multimedios"@en
+      "Nicolás Copano"@en
+      "Universidad de Santiago de Chile"@en
+      "Universidad de Magallanes"@en
+      "Universidad de Talca"@en
+      "Fundación Verso"@en
+      "TVI Filmocentro Televisión"@en
+      "Pastor Esteban Díaz"@en
+      "Vía Comunicaciones S.A."@en
+      "Dagens Industri"@en
+      "Kanal 10 Media AB"@en
+      "Sveriges Utbildningsradio"@en
+      "Lyca Media"@en
+      "Amrik Singh Kooner"@en
+      "Azzam Al-Tamimi"@en
+      "AMC Networks International UK"@en
+      "MG Alba"@en
+      "BBC Television"@en
+      "Tony Shergill"@en
+      "Access Industries"@en
+      "Frecuencia Musical"@en
+      "Cadena Internacional"@en
+      "Garshom Media Limited"@en
+      "All Perspectives Ltd."@en
+      "Angel Christian Television Trust"@en
+      "Hala London Ltd"@en
+      "Hit Networks Ltd."@en
+      "H&C TV Ltd."@en
+      "Mohamed Ali Harrath"@en
+      "Kanshi TV Ltd"@en
+      "Magnavision Ltd"@en
+      "IUOAMC"@en
+      "International Union of Arab Master Chefs Ltd"@en
+      "Miracle TV Ltd"@en
+      "Moonbug Entertainment"@en
+      "HM Government"@en
+      "BIG Media"@en
+      "Nickelodeon UK Ltd"@en
+      "Noor Ul Arfeen Siddiqui"@en
+      "Panjab Radio Limited"@en
+      "S4C Authority"@en
+      "Comcast"@en
+      "Sen Corporation Ltd."@en
+      "GoTV Media ltd"@en
+      "ITV Studios"@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel

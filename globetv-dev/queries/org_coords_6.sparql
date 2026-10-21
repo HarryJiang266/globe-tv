@@ -1,0 +1,193 @@
+# 第 6 批（180 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      " Acharya Balkrishna"@en
+      "Vemuri Radhakrishna"@en
+      "Calcutta Television Network Private Limited"@en
+      "Rajul Maheshwari and Sneh Maheshwari"@en
+      "Mata Amritanandamayi Math"@en
+      "Angel Broadcasting Network Pvt. Ltd."@en
+      "Aradana Broadcasting Intn'l Pvt. Ltd"@en
+      "Disney India"@en
+      "Rockland Media and Communication Pvt Ltd"@en
+      "Brahma Kumaris"@en
+      "Ayush TV Private Limited"@en
+      "Kalyan Jewellers"@en
+      "Narendra Choudary Tummala"@en
+      "WIN TV Pvt"@en
+      "Yuva Bharat Media"@en
+      "Calcutta Television Network"@en
+      "Sathyadhara Communications"@en
+      "Sab Network"@en
+      "Brand Value Communications"@en
+      "IN10 Media Network"@en
+      "BAG Films & Media"@en
+      "Regional News Content Producer"@en
+      "Sanjeev Kapoor"@en
+      "Turmeric Vision Private Limited"@en
+      "Hare Krsna Content Broadcast Pvt. Ltd."@en
+      "M/S MBiztech Consulting"@en
+      "AETN18 Media Pvt. Ltd."@en
+      "Hyderabad Media House Ltd."@en
+      "Pure Entertainment Group"@en
+      "Bro. M. Arockiaraj and Sis. Hema Arockiaraj"@en
+      "hstv media"@en
+      "Andhra Prabha"@en
+      "Amruta Khanvilkar"@en
+      "CSL Infomedia Pvt. Ltd."@en
+      "Haribhoomi Ltd."@en
+      "Sangeet Audio India Pvt Ltd"@en
+      "Sukhbir Singh Badal & Family"@en
+      "Somatheeram Group"@en
+      "Jain Telemedia Services Ltd"@en
+      "Jishu Television's Broadcasting Services"@en
+      "Joel Sohan Gomes"@en
+      "Kalinga Media & Entertainment Pvt Ltd"@en
+      "Tanaya Patnaik"@en
+      "Kerala Kaumudi"@en
+      "Kozhikode Cable Communicatiors Ltd"@en
+      "Kerala Communications Cable Limited"@en
+      "Devbhumi Broadcast Pvt Ltd"@en
+      "Department of General Education"@en
+      "Kaustuv Ray"@en
+      "Kalyani Solvex Private Limited"@en
+      "Life Television India Private Limited"@en
+      "Zora Traders LTD"@en
+      "RMT Network Private Limited"@en
+      "Makkal Tholai Thodarpu Kuzhumam Ltd"@en
+      "Malai Murasu TV Private Limited"@en
+      "Mango Mass Media"@en
+      "Sri Adhikari Brothers Television Network Ltd"@en
+      "Sreyams Kumar"@en
+      "Mathrubhumi Printing And Publishing Co. Ltd."@en
+      "Media One Broadcasting"@en
+      "Madurai Krishna Limited"@en
+      "Moon TV India Private Limited"@en
+      "Nadighosha TV Private Limited"@en
+      "TV Live India Pvt Ltd"@en
+      "Mantaro Network Private Limited"@en
+      "W. Thanigai Velan"@en
+      "Leader News Network Pvt. Ltd."@en
+      "News Nation Network Pvt Ltd."@en
+      "TCCL"@en
+      "Thamizhaga Cable TV Communication Pvt. Ltd."@en
+      "SPLUS Media Limited"@en
+      "Pride East Entertainments Private Limited"@en
+      "Rachana Television Pvt Ltd"@en
+      "Oli Digital"@en
+      "T.Sarkar Private Limited"@en
+      "OSM Network"@en
+      "Pocket Films"@en
+      "ONETAKEMEDIA.COM PRIVATE LIMITED"@en
+      "Polimer TV Network"@en
+      "Yash TV Entertainment Pvt. Ltd."@en
+      "QYOU Media"@en
+      "Indo-Asian News Channel Private Limited"@en
+      "Khusboo Multimedia Pvt. Ltd."@en
+      "Jagjit Publishing Company Pvt. Ltd"@en
+      "Sakal Media Group"@en
+      "Santhosh George Kulangara"@en
+      "Sanskar Info TV Private Ltd"@en
+      "Baba Ramdev"@en
+      "Shekinah Communications Limited"@en
+      "Shemaroo Entertainment Ltd."@en
+      "Satdung Group Limited"@en
+      "BBC Earth"@en
+      "Suresh Chavhanke"@en
+      "Sun Gemini"@en
+      "Sun"@en
+      "Sri Sai Media Pvt. Ltd."@en
+      "Metronation Chennai Television Pvt Ltd."@en
+      "Business Broadcast News Pvt. Ltd."@en
+      "Unite8 Sports"@en
+      "VIL Media Pvt. Ltd."@en
+      "Velicham Tv Network"@en
+      "Softline Creations Pvt. Ltd."@en
+      "Yash Raj Films (YRF) Pvt. Ltd."@en
+      "Zoom Entertainment Network Limited"@en
+      "Times Group"@en
+      "Beslan Butba"@en
+      "Prime Cinema-TV"@en
+      "Videocom"@en
+      "ANO Editing Office of the Parliamentary Television of the State Duma of the Federal Assembly of the Russian Federation"@en
+      "Media Broadcasting Group"@en
+      "Igor Kesaev & Marina Artemieva"@en
+      "Fonbet TV"@en
+      "Northwest Broadcasting LLC"@en
+      "Karavan"@en
+      "Taurer"@en
+      "Taurer Media Alliance"@en
+      "Gazprom-Media"@en
+      "M-1 Global Media OOO"@en
+      "Home Shopping Russia"@en
+      "Soyuzmultfilm"@en
+      "Nano"@en
+      "Veriselintel"@en
+      "РИА Биробиджан"@en
+      "NTM RUS OOO"@en
+      "Akado"@en
+      "First TVCh"@en
+      "Prime Cinema"@en
+      "People's Council of the Donetsk People's Republic"@en
+      "ANO TV-Novosti"@en
+      "Media-Content"@en
+      "Music Box Ru"@en
+      "Merkuriy Content"@en
+      "Song TV Russia"@en
+      "Moscow Patriarchate"@en
+      "Start"@en
+      "Lux Cinema"@en
+      "Teledom"@en
+      "Novyy Vek"@en
+      "Sovershenno sekretno"@en
+      "Delta Television"@en
+      "Tsargrad Media Group"@en
+      "Government of Moscow"@en
+      "ТВ Центр International"@en
+      "ТВЦ"@en
+      "A21 Network"@en
+      "Russian Ministry of Defence"@en
+      "Zvezda"@en
+      "SRG"@en
+      "OneGate Media GmbH"@en
+      "Bibel TV Stiftung gGmbH"@en
+      "Spiegel Geschichte"@en
+      "Curiosity Stream Inc."@en
+      "Sudwestrundfunk"@en
+      "Deutsches Musik Fernsehen GmbH&Co.KG"@en
+      "Berliner Fernseh Gruppe"@en
+      "Deutsches Musik Fernsehen GmbH"@en
+      "Federal Government of Germany"@en
+      "Hessischer Rundfunk"@en
+      "Juwelo TV Deutschland GmbH"@en
+      "ProSiebenSat.1 Media SE"@en
+      "SGS Rundfunkgesellschaft"@en
+      "Deutsche Telekom"@en
+      "Samanyolu Media Group"@en
+      "Mitteldeutscher Rundfunk"@en
+      "MV International GmbH"@en
+      "German Car TV Programm GmbH"@en
+      "Munich Live TV Fernsehen GmbH Co KG"@en
+      "Niederbayern TV Landshut GmbH"@en
+      "Niederbayern TV Passau GmbH"@en
+      "Oberpfalz TV Nord GmbH"@en
+      "Medienanstalt Hessen"@en
+      "Bayerische Medien Technik GmbH"@en
+      "RTV Broadcast & Content Mangement GmbH"@en
+      "ProSiebenSat1 Media"@en
+      "Rundfunk Berlin-Brandenburg"@en
+      "Regional Fernsehen Oberbayern GmbH"@en
+      "Your Family Entertainment AG"@en
+      "RTL Disney Fernsehen GmbH & Co. KG"@en
+      "Saarländischer Rundfunk"@en
+      "Terra Mater Studios GmbH"@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel

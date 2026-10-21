@@ -1,0 +1,193 @@
+# 第 12 批（180 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      "Dhaka Bangla Media & Communication Ltd."@en
+      "Barind Media Limited"@en
+      "City Group"@en
+      "Gazi Group"@en
+      "Green Multimedia Ltd"@en
+      "Square Group"@en
+      "VM International Limited"@en
+      "International Television Channel Ltd"@en
+      "East West Media Group"@en
+      "Apsara Media Services"@en
+      "Solaris International"@en
+      "Agricultural and Rural Development Bank"@en
+      "Bayon High Media System"@en
+      "Educational Broadcasting Cambodia"@en
+      "Raksmey Hang Meas Video Production"@en
+      "Fo Guang Shan"@en
+      "China Times Media Group"@en
+      "TBS"@en
+      "Ministry of Culture of Taiwan"@en
+      "Rockway Oy"@en
+      "The Walt Disney Company Nordic"@en
+      "Viaplay Group"@en
+      "Yleisradio"@en
+      "eMedia Investments"@en
+      "Faith Group"@en
+      "Homebase Ministries"@en
+      "South African Broadcasting Corporation"@en
+      "House Of Glory Global Church"@en
+      "AfricaXP"@en
+      "WildEarth Media (Pty) Ltd."@en
+      "Grupo JAP"@en
+      "Ministerio Internacional Fuente de Agua Viva"@en
+      "Radiadores Tomy S.A."@en
+      "Grupo JAP Radio & TV"@en
+      "Corporacion Medcom"@en
+      "Croatia Records"@en
+      "Televizija Classicum d o o"@en
+      "Animax"@en
+      "Aniplus"@en
+      "Plus Media Networks Asia"@en
+      "KC Global Media Singapore Pte. Ltd."@en
+      "KC Global Media Entertainment LLC"@en
+      "Mediacorp Pte"@en
+      "CNA"@en
+      "Rewind Networks"@en
+      "Rock Entertainment Holdings"@en
+      "Bro Ronnie Makabai"@en
+      "Buganda Kingdom"@en
+      "Makerere Christian Foundation Limited"@en
+      "KRC Uganda"@en
+      "Good News Ministries"@en
+      "Salt Media"@en
+      "DigitAlb"@en
+      "Focus Media Group"@en
+      "Ylli Ndroqi"@en
+      "Artan Dulaku"@en
+      "Genc Dulaku"@en
+      "Adrian Dulaku"@en
+      "CME PRO"@en
+      "PRO Digital SRL"@en
+      "Societatea Română de Radiodifuziune"@en
+      "Mar Sor TV SRL"@en
+      "Asociaţia Obştească"@en
+      "Georgian Public Broadcaster"@en
+      "Kibar Khalvashi"@en
+      "Adjara.com"@en
+      "Imedi Media Holding"@en
+      "Giorgi Rurua"@en
+      "Media Sakhli Obieqtivi Ltd"@en
+      "C CORPORATION"@en
+      "Awesome Media Network Sdn Bhd"@en
+      "Koperasi Amanah Pelaburan Berhad"@en
+      "Astro Malaysia Holdings Berhad"@en
+      "Media Prima Berhad"@en
+      "State Government of Selangor"@en
+      "Estonian Public Broadcasting"@en
+      "TV3 Group"@en
+      "Duo Media Networks"@en
+      "Raed Othman"@en
+      "Palestinian Public Authority for Radio and Television"@en
+      "Palestinian Broadcasting Corporation"@en
+      "aqsanet"@en
+      "Sayegh Group"@en
+      "Grupo Ratensa"@en
+      "ESE Group"@en
+      "Ministerio de la Iglesia Adventista del Séptimo Día"@en
+      "Sistema Nacional de Televisión"@en
+      "Celeste S.A."@en
+      "Grupo Pellas"@en
+      "WMEDIOS"@en
+      "Shwe Thanlwin Media"@en
+      "KMA Group"@en
+      "DVB Multimedia Group"@en
+      "Fortune Group"@en
+      "Media N Group"@en
+      "Optimum Media"@en
+      "TENAM SA"@en
+      "Bishop Ouattara Mohamed Idriss"@en
+      "Our TV"@en
+      "Radiodiffusion télévision ivoirienne"@en
+      "Communauté Missionnaire Chrétienne Internationale"@en
+      "Azad Azerbaijan TV and Radio Broadcasting Company"@en
+      "Public Television and Radio Broadcasting Company"@en
+      "Alternativ TV LLC"@en
+      "Government of Azerbaijan"@en
+      "Mei Ah Entertainment Group Co Ltd"@en
+      "Lightning International Holdings Limited"@en
+      "Lightning International"@en
+      "CJ E&M"@en
+      "Pro Plus d.o.o."@en
+      "Central Television and Radio Broadcasting Studio of the Ministry of Defense"@en
+      "ERT"@en
+      "Messianic Vision"@en
+      "Omega Channel Ltd."@en
+      "Sigma Radio TV Public Limited"@en
+      "Mazzika Group"@en
+      "Egyptian Radio and Television Union"@en
+      "Al Jazeera Media Network"@en
+      "Antenne A SPRL"@en
+      "Multi Media Congo MMC"@en
+      "Le Monde Media Group"@en
+      "Gommer Dipang"@en
+      "Laisvas ir nepriklausomas kanalas UAB"@en
+      "UAB Singing Fish"@en
+      "MG group"@en
+      "15min grupe"@en
+      "Radiotelevizija Federacije BiH"@en
+      "Javno preduzeće Radio televizija Zenica d.o.o. Zenica"@en
+      "BalkanMedia d.o.o. Sarajevo"@en
+      "Vidik"@en
+      "Groupe Médias du Sud"@en
+      "Radiodiffusion télévision sénégalaise"@en
+      "Groupe Afrique54 SARL"@en
+      "For You Media"@en
+      "Living God Ministries International"@en
+      "Asia TV"@en
+      "Asia Broadcasting Corporation"@en
+      "Adani Group"@en
+      "MTV Channel"@en
+      "Capital Maharaja"@en
+      "Mahamevnawa Buddhist Monastery"@en
+      "VOA"@en
+      "Voice of Asia Network Pvt Ltd"@en
+      "EAP Network"@en
+      "Lyca Group Ben Holdings"@en
+      "Kapital Strategic Holdings Pvt Ltd"@en
+      "ASSRD"@en
+      "Government of Afghanistan"@en
+      "Fazel Karim Fazel"@en
+      "Asif Mohseni"@en
+      "Netalkole Media"@en
+      "La Voix Évangélique d'Haïti"@en
+      "Eglise de Jésus-Christ Full Gospel"@en
+      "Government of Haiti"@en
+      "Kyrgyz-Turkish Manas University"@en
+      "Osh Pirim Media"@en
+      "TV15 Media Group"@en
+      "Roman Catholic Archdiocese of Cebu"@en
+      "RadioWorld Broadcasting Corporation"@en
+      "Gateway UHF Television Broadcasting"@en
+      "AS Radio SWH"@en
+      "Re MEDIA"@en
+      "Government of Togo"@en
+      "Opuntia S.A."@en
+      "CLT-UFA S.A."@en
+      "VOA MEDIA"@en
+      "Alberto Tans"@en
+      "Future Media"@en
+      "United Networks"@en
+      "Mood Media"@en
+      "Television New Zealand"@en
+      "C15 Media Networks Ltd."@en
+      "Formula One Group"@en
+      "Teilifís na Gaeilge"@en
+      "KOHA Group"@en
+      "RTK"@en
+      "Company 21"@en
+      "Action Power of Faith Ministries"@en
+      "The Church of Pentecost"@en
+      "TV3"@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel

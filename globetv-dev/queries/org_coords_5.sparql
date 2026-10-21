@@ -1,0 +1,193 @@
+# 第 5 批（180 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      "CCI Asia Group Corp."@en
+      "Teledistribution Baltic"@en
+      "Government of Latvia"@en
+      "New Zealand Government"@en
+      "Television New Zealand Ltd."@en
+      "Bank of Africa"@en
+      "SNRT"@en
+      "Government of Armenia"@en
+      "Panarmenian Media Group"@en
+      "EPTV"@en
+      "Rwanda Broadcasting Agency"@en
+      "RJRGleaner Communications Group"@en
+      "Al Itrah Foundation"@en
+      "Flamingo TV"@en
+      "Ansarullah Movement"@en
+      "Office of Radio and Television of Niger"@en
+      "Broadcasting Corporation of The Bahamas"@en
+      "Télévision Tunisienne"@en
+      "Government of Monaco"@en
+      "Caribbean Broadcast Network"@en
+      "Radio Television Brunei"@en
+      "Future Today Inc."@en
+      "CBS News"@en
+      "G-Unit Films & Television Inc."@en
+      "A&E Television Networks LLC"@en
+      "AccuWeather Inc."@en
+      "Aspen Hill Media Group"@en
+      "Al Hayat Ministries"@en
+      "Azad Barwari"@en
+      "RLJ Entertainment Inc"@en
+      "Amazing Facts International"@en
+      "Marquee Brands LLC"@en
+      "Access Media Group"@en
+      "Streaming Ink Media"@en
+      "HIDIVE LLC"@en
+      "Cinedigm"@en
+      "UP Entertainment"@en
+      "AXS TV LLC"@en
+      "First Media"@en
+      "Triple B Media"@en
+      "Big Ten Conference"@en
+      "Bloomberg"@en
+      "CBS"@en
+      "Bravo Media LLC."@en
+      "Brigham Young University"@en
+      "Canela Media"@en
+      "Roman Catholic Diocese of Rockville Centre"@en
+      "Archdiocese of Boston"@en
+      "CBS Entertainment"@en
+      "Lloyd E. Rigler-Lawrence E. Deutsch Foundation"@en
+      "Sinclair Broadcasting Group"@en
+      "Crunchyroll LLC"@en
+      "Sony Group Corporation"@en
+      "Word of God Fellowship"@en
+      "Hasbro"@en
+      "XTR Inc."@en
+      "World Dove Media"@en
+      "DraftKings Inc"@en
+      "AirVuz LLC"@en
+      "E! Entertainment Television LLC"@en
+      "EBONY Media Group"@en
+      "Robert Rodriguez"@en
+      "CBS Studios Inc."@en
+      "The Walt Disney Comapny"@en
+      " MotorTrend"@en
+      "FloSports Inc"@en
+      "FloSports Inc."@en
+      "San Bernardino Community College District"@en
+      "Fox Entertainment"@en
+      "Fox Sports"@en
+      "Public Communicators Inc."@en
+      "Fun Roads Media"@en
+      "Fuse Media"@en
+      "FX Channels"@en
+      "AFL Productions"@en
+      "Oral Roberts University"@en
+      "Gem Shopping Network Inc"@en
+      "David Rives Ministries"@en
+      "Girlfriends Films"@en
+      "Prime Time Christian Broadcasting Inc."@en
+      "Gravitas Ventures LLC"@en
+      "Oasis Television Ministries Nonprofit LLC"@en
+      "Ahmad Obali"@en
+      "Future Today Inc"@en
+      "Hasbro Entertainment"@en
+      "In Touch Ministries"@en
+      "Jewish Education In Media"@en
+      "JLTV LLC"@en
+      "Joel Osteen Ministries"@en
+      "Kajou TV Network LLC"@en
+      "Ethnic"@en
+      "Bet-Nahrain Inc."@en
+      "Kentucky Authority for Educational Television"@en
+      "Videoondemand365 Limited"@en
+      "Viva Pictures Distribution LLC"@en
+      "KMCT Holdings LLC"@en
+      "Tourist Info"@en
+      "Scripps Broadcasting Holdings LLC"@en
+      "KPVM Television Inc."@en
+      "Mobile Video Tapes Inc."@en
+      "Capital Community Broadcasting Inc."@en
+      "Victory Television Network Inc."@en
+      "LATV Networks LLC"@en
+      "A&E Networks Asia"@en
+      "A&E Networks"@en
+      "ABC Owned Television Stations"@en
+      "Lucky Dog Films"@en
+      "Spanihs Broadcasting System"@en
+      "Merit Street Media"@en
+      "Major League Baseball"@en
+      "Feld Entertainment Inc."@en
+      "MSG Networks Inc"@en
+      "MTV Entertainment Group"@en
+      "Sound Vision Foundation"@en
+      "TWC Electronics"@en
+      "National Basketball Association"@en
+      "NBC Entertainment"@en
+      "National Football League"@en
+      "National Hockey League"@en
+      "NorCast Media Group"@en
+      "Classic Broadcasting LLC"@en
+      "National Religious Broadcasters"@en
+      "Nader Rafiee"@en
+      "Government of Ontario"@en
+      "Kroenke Sports & Entertainment"@en
+      "Free TV Networks"@en
+      "Outside"@en
+      "Overtime Sports Inc"@en
+      "Palm Beach County Film & Television Commission"@en
+      "Hemisphere Media Group"@en
+      "Omar Khetab"@en
+      "Keshish Hamid"@en
+      "Dr. Hamid Mirza Aghassi"@en
+      "Alireza Amirghassemi"@en
+      "PBS Distribution"@en
+      "Professional Fighters League Group Ltd."@en
+      "Pursuit Media LLC"@en
+      "USAGM"@en
+      "Viki Inc."@en
+      "Robert J. Sigg"@en
+      "Hubbard Broadcasting"@en
+      "Thomson Reuters Corporation"@en
+      "Damian Pelliccione"@en
+      "Rural Media Group Inc."@en
+      "Roar"@en
+      "S Play"@en
+      "Salem Media Group Inc"@en
+      "WaterStone"@en
+      "The Christian Community Foundation Inc."@en
+      "Charles Schwab Media Productions Company (CSMPC)"@en
+      "The Charles Schwab Corporation"@en
+      "Church of Scientology"@en
+      "Vaibhav Global"@en
+      "Paramount+ with SHOWTIME"@en
+      "STARZ Encore"@en
+      "Superstation Inc."@en
+      "FAST Channels TV"@en
+      "The First Digital Inc."@en
+      "The Pet Collective LLC"@en
+      "The Walk Television Network LLC"@en
+      "theDove Media Inc"@en
+      "Tegna Inc."@en
+      "TelevisaUnivision USA"@en
+      "USA TODAY Co. Inc."@en
+      "Local"@en
+      "Superchannel Worship Ministries Inc."@en
+      "Gray Television Licensee LLC"@en
+      "Carolina Christian Broadcasting Inc."@en
+      "The WNET Group"@en
+      "WGBH Educational Foundation"@en
+      "National Educational Telecommunications Association"@en
+      "Family Broadcasting Corporation"@en
+      "WPLG Inc."@en
+      "YTA TV/Outside TV"@en
+      "Video Voice Inc."@en
+      "Spoorthi Communications Pvt. Ltd."@en
+      "Omega TV Media Pvt. Ltd."@en
+      "Fame Media Pvt. Ltd"@en
+      "Sky News Media Pvt. Ltd."@en
+      "G Entertainment"@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel

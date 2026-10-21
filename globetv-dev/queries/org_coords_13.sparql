@@ -1,0 +1,122 @@
+# 第 13 批（109 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      "Media General Ghana Limited"@en
+      "General Organization of Radio and TV"@en
+      "RTV Syria"@en
+      "Prime"@en
+      "Fadaat Media"@en
+      "Welat TV"@en
+      "Media Ring Pvt Ltd."@en
+      "Maldives Media House Pvt Ltd."@en
+      "Ibrahim Azim Azim"@en
+      "Raajje Television Pvt Ltd."@en
+      "Island Broadcasting Company"@en
+      "Samuel Dossou-Aworet"@en
+      "Le Nouveau Manager Médias"@en
+      "Societé de Radio et de Télévision du Bénin"@en
+      "Entertainment Media"@en
+      "Shree Krishna Pranami Media Pvt. Ltd."@en
+      "Kantipur Television Network Pvt Ltd"@en
+      "Ray Media Group"@en
+      "Janakpur Today Media Group Pvt. Ltd."@en
+      "Prometevs"@en
+      "Multimedia Kentron PBY"@en
+      "Arthur Yezekyan"@en
+      "Armen Minas"@en
+      "Citizens of Japan"@en
+      "NHK World-Japan"@en
+      "Government of Japan"@en
+      "Amou Yazid"@en
+      "Arlaadi Media Network"@en
+      "Big Television Network"@en
+      "Isango Star"@en
+      "Kakooza Nkuliza Charles"@en
+      "Tele10 Group"@en
+      "Teledifusao de Macau"@en
+      "George Lu"@en
+      "Good News Media Network"@en
+      "Whirlwind International Group"@en
+      "Mercy and Truth Ministries"@en
+      "Dodoma Media Group"@en
+      "Mahaasin Media"@en
+      "Med Media Services"@en
+      "NET Media"@en
+      "One Productions"@en
+      "Smash Communications"@en
+      "Morgunblaðið"@en
+      "Eirkur Sigurbjornsson"@en
+      "Bizz Media"@en
+      "Riddim & Hope Network"@en
+      "Mrs. Sherry Singh"@en
+      "Darut Tarbiyah"@en
+      "Trinity Communications Network"@en
+      "Emilayla Coffi"@en
+      "Erick Alvarez"@en
+      "Groupe Fadoul Afrique"@en
+      "Filinfo Group"@en
+      "Savane Médias"@en
+      "Identité Radio"@en
+      "Media H Antilles Guyane"@en
+      "Max Monrose"@en
+      "Alves Lampeão Jr."@en
+      "Vitória Comunicações"@en
+      "Be Blessed Média"@en
+      "Norbert Dabira"@en
+      "SAS ETV Global"@en
+      "Groupe RHT"@en
+      "Afrikinfo Médias"@en
+      "Groupe Evasion Guinée"@en
+      "LRTC"@en
+      "Al Wasat Media Foundation"@en
+      "Mavis Albertina"@en
+      "Jachmin Pinedo Productions N.V."@en
+      "Agencia Prensa Latina"@en
+      "Abibou Garba"@en
+      "Moussa Kaka"@en
+      "Dave’s Portrait Studio"@en
+      "Nial Nelson-Fraser"@en
+      "Ignite News Inc."@en
+      "Multi Technology Vision Inc."@en
+      "ILTV Studios"@en
+      "Government of Sudan"@en
+      "Servicio de Comunicación Audiovisual Nacional"@en
+      "Robert Rocha Pablo Scotellaro"@en
+      "Fousseyni Maïga"@en
+      "Government of Mali"@en
+      "Igreja Maná"@en
+      "Media Muzangala"@en
+      "Medianova"@en
+      "The Department of Information"@en
+      "Palm Branch Media"@en
+      "Government of Saint Kitts and Nevis"@en
+      "Hot FM Communications"@en
+      "Daher Broadcasting Services"@en
+      "Government of Namibia"@en
+      "Namibia Media Holdings"@en
+      "San Marino RTV"@en
+      "Sol Media S.A."@en
+      "Radio i Televisio d'Andorra"@en
+      "Caribbean Broadcasting Corporation"@en
+      "Eritrean Ministry of Information"@en
+      "Government of Papua New Guinea"@en
+      "France Televisions"@en
+      "Pointville Communications Inc."@en
+      "Muhammed Jah"@en
+      "Polisario Front"@en
+      "Sahara Medias"@en
+      "Choice Broadcasting Company"@en
+      "St. Vincent and The Grenadines Broadcasting Corporation Ltd."@en
+      "Apia Broadcasting Ltd"@en
+      "Grupo Cidade Comunicações"@en
+      "Prophetic Healing and Deliverance Ministries"@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel

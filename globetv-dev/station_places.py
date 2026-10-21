@@ -547,6 +547,20 @@ def city_weighted_points(cc, n, seed=0, radius_deg=0.5):
 
 
 _WIKI = None
+_WIKI_ORGS = None
+
+
+def _wiki_orgs():
+    """Wikidata 机构总部坐标索引（wikidata_orgs.json），不存在返回空字典。"""
+    global _WIKI_ORGS
+    if _WIKI_ORGS is None:
+        p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'wikidata_orgs.json')
+        if os.path.exists(p):
+            with open(p, encoding='utf-8') as f:
+                _WIKI_ORGS = json.load(f)
+        else:
+            _WIKI_ORGS = {}
+    return _WIKI_ORGS
 
 
 def _wiki_index():
@@ -579,11 +593,10 @@ def resolve(network, owners, name, alt_name, cc):
             cand = w.get(norm(text))
             if not cand:
                 continue
+            # 严格同国才认。教训：放宽到"唯一候选就用"时，US 的 MTV 被匹配成
+            # 日本的 MTV Japan、CTV 变成日本中京电视台、Fox Sports 1 跑到奥地利。
+            # 短缩写（ABC/MTV/MBC/STS）全球同名太多，宁可放弃也不要假坐标。
             pick = next((e for e in cand if e[2] == cc), None)
-            if pick is None and not any(e[2] for e in cand) and len(cand) == 1:
-                pick = cand[0]          # 没标国家且全表唯一，可以用
-            if pick is None and len(cand) == 1:
-                pick = cand[0]
             if pick is not None:
                 return ('wiki', pick[0], pick[1], 'Wikidata: ' + (text or ''))
 
@@ -608,6 +621,17 @@ def resolve(network, owners, name, alt_name, cc):
     kw = _fast_reason(net, ows)
     if kw:
         return ('fast', None, None, kw)
+
+    # 2.5) Wikidata 查到的机构总部坐标（比人工表全，同样要求同国）
+    wo = _wiki_orgs()
+    if wo:
+        for o in orgs:
+            cand = wo.get(norm(o))
+            if not cand:
+                continue
+            pick = next((e for e in cand if e[2] == cc), None)
+            if pick is not None:
+                return ('org', pick[0], pick[1], 'Wikidata 机构: ' + o)
 
     # 3) 机构级：network / owners 命中总部城市表
     for kw_, cc_limit, city, city_cc in ORG_CITY:

@@ -1,0 +1,193 @@
+# 第 8 批（180 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      "Narrative Entertainment UK Limited"@en
+      "Trace Plus Inc"@en
+      "AMC Networks International"@en
+      "The Walt Disney Company India"@en
+      "Zee Entertainment Enterprises"@en
+      "Ethem Sancak"@en
+      "Kalyon Group"@en
+      "Turkuvaz Medya"@en
+      "Kahramanmaras Radyo ve Televizyon Yayınları Tic. A.S."@en
+      "Ilbak Holding"@en
+      "Disney-ABC Television Group"@en
+      "Presidency of Religious Affairs of Republic of Turkiye"@en
+      "Ayman Nour"@en
+      "Fenerbahce S.K."@en
+      "GEM Group"@en
+      "Cafer Mahiroglu"@en
+      "Kanal Media Center A S"@en
+      "Albayrak Holding"@en
+      "Demirören Group"@en
+      "Celal Gokcen"@en
+      "Huzur Radyo TV A.Ş."@en
+      "Dogus Media Group"@en
+      "Spacetoon International"@en
+      "TBMM"@en
+      "Ihlas Holding"@en
+      "Başkent Vizyon Radio Television Broadcasting Corporation"@en
+      "Média-Participations"@en
+      "Cirano Group"@en
+      "RMC BFM"@en
+      "Groupe Canal Plus"@en
+      "Cannes Lérins Médias"@en
+      "CNews"@en
+      "France Galop"@en
+      "Lagardère Radios"@en
+      "Groupe CANAL+"@en
+      "France Medias Monde"@en
+      "Gong Media"@en
+      "M6 Group"@en
+      "Kozoom International"@en
+      "SECOM Group"@en
+      "Les Bouquets Canal+"@en
+      "Thema"@en
+      "NRJ Group"@en
+      "QRA"@en
+      "Radio Monte Carlo"@en
+      "CMA Media File"@en
+      "NBC UNIVERSAL GLOBAL NETWORKS ESPANA S.L.U."@en
+      "Czech Media Invest France"@en
+      "Groupe TF1"@en
+      "Alliance Trace Media"@en
+      "TPG Capital Trace Partners"@en
+      "TV5 Monde+"@en
+      "ViàOccitanie"@en
+      "Groupe La Dépêche du Midi"@en
+      "Bertelsmann"@en
+      "A1 Mediagroep"@en
+      "Altena Group B.V."@en
+      "Canal+"@en
+      "FomixMedia"@en
+      "Stichting FomixMedia"@en
+      "A&E Networks Benelux"@en
+      "Langstraat Media"@en
+      "LINQ Media"@en
+      "Bauer Media Group"@en
+      "The Walt Disney Company BV"@en
+      "Omroep Centraal"@en
+      "Omroep Dommelland"@en
+      "Omroep Flevoland"@en
+      "Omroep Gelderland"@en
+      "Omroep Hoeksche Ward"@en
+      "Omroep Hulst"@en
+      "Omroep Land van Cuijk"@en
+      "Omroep Lingewaard"@en
+      "Omroep Meierijstad"@en
+      "Omroep Ons West Brabant"@en
+      "Omroep Peelrand"@en
+      "Omroep Sudwest"@en
+      "Omroep Tilburg"@en
+      "Omroep Venlo"@en
+      "Omroep Venray"@en
+      "Omroep Zeeland"@en
+      "DPG Media B.V."@en
+      "192TV"@en
+      "Inn-Picture"@en
+      "TVR Studios B.V."@en
+      "Derk Nijssen"@en
+      "Ministry of Defence Ukraine"@en
+      "Avers Television Company"@en
+      "Chernomorskaya Television and Radio Company"@en
+      "Sterkh"@en
+      "Lux Television and Radio Company"@en
+      "Free Media Holding"@en
+      "Ars Manga Production"@en
+      "MPIU"@en
+      "DMST"@en
+      "FC Dynamo Kyiv"@en
+      "E-lympic"@en
+      "Goldberry LLC"@en
+      "The National News Agency of Ukraine"@en
+      "Ukrinform"@en
+      "Hollywood Ukraine"@en
+      "Andrey Chebanov"@en
+      "ISLND"@en
+      "Regional Center for Aesthetic Education"@en
+      "Kyiv City Council"@en
+      "GTRK LNR"@en
+      "GDF Media Limited"@en
+      "Megogo"@en
+      "Oleksiy Dontsov"@en
+      "Yulian Novak"@en
+      "MYSTO-TV"@en
+      "Ukrainian Media Resource"@en
+      "Mindon Holdings"@en
+      "Golden Middle"@en
+      "Khmarochos Holdings"@en
+      "XTV Media"@en
+      "Lviv Regional Council"@en
+      "Ivan Evgenievich Grishin"@en
+      "Ekaterina Pavlovna Grishina"@en
+      "Verkhovna Rada of Ukraine"@en
+      "National Television Council"@en
+      "Adjara Group"@en
+      "SK 1"@en
+      "Studio Pilot"@en
+      "Unika-TV"@en
+      "Planeta"@en
+      "RAI Media Group"@en
+      "Televesvesit"@en
+      "TRO Ternopil-Media"@en
+      "Salnik Vladimir Anatolyevich"@en
+      "Medved Andrey Alexandrovich"@en
+      "Salnik Maxim Anatolyevich"@en
+      "TUSO"@en
+      "Vinskevich Anatoly Anatolievich"@en
+      "Rudolf Kirnos"@en
+      "Zaporozhye City Council"@en
+      "Ukrainian Entertainment Television"@en
+      "Luis Mino"@en
+      "Grupo Olmos S.A."@en
+      "Telecentro"@en
+      "TV Cable Tacural"@en
+      "Teleaire Contenidos"@en
+      "Ministerio Viento Recio Internacional"@en
+      "Neuquén TV S.A."@en
+      "TV Resistencia S.A.I.F."@en
+      "Cooperativa Miramar"@en
+      "Catholic Church In Argentina"@en
+      "Editorial Perfil"@en
+      "Grupo Linke"@en
+      "ediz@r producciones"@en
+      "Héctor Ricardo Garcia"@en
+      "Disney Media Network Latin America"@en
+      "Grupo Octubre"@en
+      "Argentine Ministry of Education"@en
+      "Fox Sports International"@en
+      "Mike El Haiek"@en
+      "Itel S.A."@en
+      "Grupo Perfil"@en
+      "Federal Group"@en
+      "Ministry of Education of Argentina"@en
+      "Quantica Medios"@en
+      "Telefe"@en
+      "San Juan"@en
+      "Radio y Televisión Argentina S.A."@en
+      "Sistema Municipal de Medios y Contenidos Públicos"@en
+      "Torneos Clarin Group"@en
+      "X Level Media"@en
+      "Grupo Acustik"@en
+      "Sistema Mexiquesnse de Medios Publicos"@en
+      "AYM Media Networks"@en
+      "RYTA"@en
+      "Sistema Regional de Televisión A.C."@en
+      "National Polytechnic Institute"@en
+      "G3 N Media MX"@en
+      "Grupo Imagen"@en
+      "Sistema Jalisciense de Radio y Televisión"@en
+      "MVS Cominicaciones"@en
+      "Sistema Mexiquense de Medios Publicos"@en
+      "Olympusat"@en
+      "Grupo Radiotele"@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel

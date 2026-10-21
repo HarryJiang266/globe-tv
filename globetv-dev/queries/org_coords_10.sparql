@@ -1,0 +1,193 @@
+# 第 10 批（180 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      "HUM Network Ltd"@en
+      "Apna Channel"@en
+      "Grace Gospel Church of Pakistan"@en
+      "Mediacon Network Pvt Ltd"@en
+      "King TV"@en
+      "Kashish Television Network"@en
+      "Mian Amer Mahmood"@en
+      "LEO Communications Pvt. Ltd."@en
+      "Mehran TV Private Limited"@en
+      "Multi Plus Corporation Pvt. Ltd."@en
+      "Bells Entertainment (Pvt.) Ltd"@en
+      "Chauhdry Abdul Rehman"@en
+      "Paigham Communications Limited"@en
+      "PTV Sports Network"@en
+      "Park View Limited"@en
+      "Visionary Group"@en
+      "RFE/RL Inc."@en
+      "Film Studios Barrandov"@en
+      "S&P Broadcasting a s"@en
+      "Perinvest Group"@en
+      "Antena Uno"@en
+      "Gobierno del Ecuador"@en
+      "Workers of the channel"@en
+      "Iglesia Evangélica Apostólica del Nombre de Jesús"@en
+      "Medios Ediasa"@en
+      "TroncalNet"@en
+      "Grupo RTS"@en
+      "Ángel Costta García"@en
+      "Gustavo Alarcón"@en
+      "Grupo Teleamazonas"@en
+      "International Motors Company Inc."@en
+      "Cardizales Oroibéricos S.A."@en
+      "Asamblea Nacional del Ecuador"@en
+      "Grupo El Comercio"@en
+      "Unidad Educativa Bilingüe Interamericana"@en
+      "Universidad Regional Autónoma de los Andes"@en
+      "Ministry of Public Security of Vietnam"@en
+      "Saigontourist Cable Television Limited Liability Company"@en
+      "Vinh Long TV"@en
+      "Vinh Long Newspaper and Radio Television"@en
+      "VTV"@en
+      "TV Azteca Honduras"@en
+      "Universidad de San Pedro Sula"@en
+      "Sociedad Televisora Nacional S.A. de C.V."@en
+      "Cable Vision del Atlantico"@en
+      "Diócesis de Choluteca"@en
+      "Grupo VTV"@en
+      "BEC World"@en
+      "Thai Public Broadcasting Service"@en
+      "Amarin Television"@en
+      "Royal Thai Army"@en
+      "Bangkok Broadcasting & Television"@en
+      "RS Public Company Limited"@en
+      "GMM Grammy"@en
+      "JKN Best Life Co Ltd"@en
+      "Maya Channel 2002 Co Ltd"@en
+      "MCOT"@en
+      "Ministry of Finance"@en
+      "Nation TV Co Ltd"@en
+      "Public Relations Department of the Office of the Prime Minister"@en
+      "National Broadcasting Services of Thailand"@en
+      "National News Bureau of Thailand"@en
+      "Thai World Media Co Ltd"@en
+      "One 31 Co. Ltd."@en
+      "National Assembly of Thailand"@en
+      "Triple V Broadcast Co. Ltd."@en
+      "Thairath"@en
+      "Vacharaphol Co. Ltd."@en
+      "Dong-A Media Group"@en
+      "Yoido Full Gospel Church"@en
+      "Defense Media Agency"@en
+      "Jeju MBC"@en
+      "Mokpo MBC"@en
+      "Chuncheon MBC"@en
+      "MBC Chungbuk Corporation"@en
+      "MBC Gangwon-Yeongdong Corporation"@en
+      "Yeosu MBC"@en
+      "Andong MBC"@en
+      "G1 Broadcasting Corporation"@en
+      "Gwangju MBC"@en
+      "Daejeon MBC"@en
+      "Daegu MBC"@en
+      "Jeonju MBC"@en
+      "Taegu Broadcasting Corporation"@en
+      "Pusan Broadcasting Corporation"@en
+      "Kwangju Broadcasting Corporation"@en
+      "Ulsan Broadcasting Corporation"@en
+      "Jeonju Broadcasting Corporation"@en
+      "Cheongju Broadcasting Corporation"@en
+      "Jeju International Broadcasting System"@en
+      "Busan MBC"@en
+      "OBS"@en
+      "OBS Gyeongin TV Corporation"@en
+      "Gwangju Cable Television Co Ltd"@en
+      "MBC Gyeongnam Broadcasting Corporation"@en
+      "National Assembly of South Korea"@en
+      "NS Shopping Co Ltd"@en
+      "Korea National Open University"@en
+      "Korea Electric Power Corporation"@en
+      "KT&G"@en
+      "Mirae Asset Life Insurance"@en
+      "National Assembly of Venezuela"@en
+      "Cristian Hilos"@en
+      "Wilmer Ruperti"@en
+      "Juan Domingo Cordero"@en
+      "Raul Gorrin"@en
+      "Gustavo Perdomo"@en
+      "Parroquia San Miguel"@en
+      "GRUPO LORINI"@en
+      "T&H Productions"@en
+      "Bloque de Armas"@en
+      "Victor Alvarado"@en
+      "Oxigeno Network"@en
+      "Producciones Mariano C.A."@en
+      "Grupo Central de Comunicaciones"@en
+      "Telesur"@en
+      "Omar Nicolas Camero Zamora"@en
+      "Cablexpress TV C.A."@en
+      "Corporación TVM PARA TI C.A."@en
+      "Grupo Sindoni"@en
+      "Grupo Últimas Noticias"@en
+      "Arzobispado de Caracas"@en
+      "RADIO TV STATION GREEK ORTHODOX ECCLESIASTICAL INFORMATIVE BROADCAST S.A."@en
+      "George Bokas and Co. S.A."@en
+      "Radio TV Promotion S.A."@en
+      "Alpha Satellite Television S.A."@en
+      "City News S.A."@en
+      "ART TV Gkaniatsas S.A."@en
+      "General Broadcasting Company S.A."@en
+      "Corfu Channel S.A."@en
+      "Dion TV S.A."@en
+      "Egnatia Tileorasi S.A."@en
+      "ENA Channel S.A."@en
+      "Radiotelevision Operations Epirus S.A."@en
+      "Radiotileoptiki Kilkis S.A."@en
+      "Star Hellenic Radio Television S.A."@en
+      "Kontra Media S.A."@en
+      "Icarus Broadcasting Enterprises S. A."@en
+      "Mesogeios Radiotileoptikos Stathmos AE"@en
+      "Rethymno TV S A"@en
+      "Attica Television S A"@en
+      "Pella TV S.A."@en
+      "Star Channel S.A."@en
+      "Start Media"@en
+      "Telekriti Media Group"@en
+      "Telekriti"@en
+      "Top Channel S.A."@en
+      "Conexion Positiva Medios"@en
+      "Enlace Internacional"@en
+      "Teletica"@en
+      "Publi-Ciudad"@en
+      "Radio Turrialba"@en
+      "Familia Picado Cozza"@en
+      "Grupo Multimedios FM"@en
+      "Carlos Valenciano Kamer"@en
+      "Empresa Nacional de Televisión de Bolivia"@en
+      "Compañía Comercial Minera Ricacruz Ltda."@en
+      "Red de Canal Virgen de Copacabana"@en
+      "Grupo EL DEBER"@en
+      "FTTV Comunicaciones"@en
+      "Facetas Televisión"@en
+      "Ministerio del Nuevo Pacto Poder de Dios"@en
+      "Paceñísima de Televisión"@en
+      "Corp. Ultravision S.R.L."@en
+      "Red Uno"@en
+      "Grupo Kuljis"@en
+      "Red Uno de Bolivia S.A."@en
+      "Sistema RTP"@en
+      "Sistema Pandino de Comunicación"@en
+      "Unifranz University"@en
+      "Grupo Monasterio"@en
+      "Empresa de Comunicaciones del Oriente Ltda. (Ecor Ltda.)"@en
+      "Universidad Privada del Valle"@en
+      "Universidad Pública de El Alto"@en
+      "Sistema Cristiano de Comunicaciones"@en
+      "Radio Maya TGBA"@en
+      "Grupo Génesis"@en
+      "Casa Editora Prensa Libre"@en
+      "Grupo ABC Comunicaciones"@en
+      "Grupo América"@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel

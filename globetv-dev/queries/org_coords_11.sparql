@@ -1,0 +1,193 @@
+# 第 11 批（180 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      "Tv Max Cable S.A."@en
+      "Grupo Visión Comunicaciones"@en
+      "3T Studio"@en
+      "Invasiva Media"@en
+      "Antonio J. Vierci"@en
+      "Oasis Multimedios"@en
+      "Government of Paraguay"@en
+      "Cadena Comunicación Yaguarón"@en
+      "Red Suceso Multimedios"@en
+      "Venus Comunicaciones"@en
+      "Slavi Trifonov"@en
+      "Investor.BG AD"@en
+      "Evrokom"@en
+      "A&E Networks EMEA"@en
+      "Agency Atlantic EOOD"@en
+      "Nova Broadcasting Group"@en
+      "HD Chanel EOOD"@en
+      "TTVI EOOD"@en
+      "VVD - Ruychev EOOD"@en
+      "FUEL TV S.A."@en
+      "Alexandre Faria"@en
+      "FC Porto"@en
+      "Nouri al-Maliki"@en
+      "Saad Asem Al Janabi"@en
+      "Saad al-Bazzaz"@en
+      "Al-Aimma Visual Channel"@en
+      "AVA Media Group Company for Satellite Broadcasting"@en
+      "Patriotic Union of Kurdistan"@en
+      "Kurdistan24 for Media and Research"@en
+      "Nalia Media Corporation"@en
+      "Government of Slovakia"@en
+      "Antik"@en
+      "antik.sk"@en
+      "Mega Max Media s.r.o."@en
+      "Mega Max Media"@en
+      "Antik Telecom"@en
+      "STVR"@en
+      "LifeTv s r o"@en
+      "Novocentrum Nove Zamky a s"@en
+      "Zdenko Šmondrk"@en
+      "Prince Al-Waleed bin Talal"@en
+      "Rotana Group"@en
+      "Shahid;MBC Mood"@en
+      "Church of Nigeria"@en
+      "God's Approval Campaign"@en
+      "Olusola Momoh"@en
+      "LoveWorld Network"@en
+      "News Central Media Limited"@en
+      "Government of Nigeria"@en
+      "Osun State Government"@en
+      "Rapid Broadcasting Network LTD"@en
+      "Consolidated Media Associates"@en
+      "Full Media Services"@en
+      "The GodHouse Center"@en
+      "Government of Kazakhstan"@en
+      "Nur Media"@en
+      "Ministry of Transportation and Communication"@en
+      "TAN Mediagroup"@en
+      "Belle Amie d.o.o."@en
+      "Valentin Kuleto"@en
+      "Savremena gimnazija"@en
+      "Link Group d.o.o."@en
+      "IDJWorld d.o.o."@en
+      "Pink Media Group"@en
+      "Nova S d.o.o."@en
+      "LITE FM doo"@en
+      "Radoica milosavljević"@en
+      "Radio Televizija Novi Pazar d.o.o."@en
+      "Samir Škrijelj"@en
+      "NBC Universal Global Networks Deutschland GmbH"@en
+      "Maxim Media Plus doo"@en
+      "Deni Zah"@en
+      "TV Duga+"@en
+      "Srpska pravoslavna crkva"@en
+      "Zoran Dovečer"@en
+      "Nacionalni savet mađarske nacionalne manjine"@en
+      "Reformatska hrišćanska crkva u Srbij"@en
+      "Jedinstvo mađarske manjine"@en
+      "Kulturni savez Vojvođanskih mađara"@en
+      "Subotička biskupija"@en
+      "Evangelistička hrišćanska crkva a.v. u Srbiji"@en
+      "Fondacija Laslo Sekereš"@en
+      "Iren Gabrić Molnar"@en
+      "Tamaš Korhec"@en
+      "Andor Deli"@en
+      "Zoltan Jegeš"@en
+      "Tigar ad"@en
+      "TV Pirot d.o.o."@en
+      "Bel'Afrika Media TV"@en
+      "Roularta"@en
+      "European Union"@en
+      " Groupe Rossel"@en
+      "Sterk Productions"@en
+      "Ten Network Holdings Ltd"@en
+      "Australian Government"@en
+      "Melbourne Community Television Consortium"@en
+      "C44 Adelaide"@en
+      "Cricket Australia (CA)"@en
+      "Australian News Channel Pty Ltd"@en
+      "Seven Network/Foxtel"@en
+      "Seven West Media"@en
+      "Racing Victoria"@en
+      "SBS Television"@en
+      "Special Broadcasting Service"@en
+      "Ticker Media Group"@en
+      "Akili Network"@en
+      "Ecclesia Broadcasting Network"@en
+      "Mediamax Network Ltd"@en
+      "Apostle Dr. Peter Nyaga"@en
+      "Agape Association of El Salvador"@en
+      "Iglesia Árbol de Vida"@en
+      "Gobierno de El Salvador"@en
+      "Misión Cristiana Elohim Central"@en
+      "Diario TRV"@en
+      "Miguel Ángel Hernández Segovia"@en
+      "Iglesia del Camino"@en
+      "Misión Cristiana Elim Internacional"@en
+      "Iglesia Gracia Sobre Gracia"@en
+      "Radio Jesucristo Fuente de Vida"@en
+      "Iglesia Cristiana Josué"@en
+      "Iglesia CRET Central"@en
+      "Arquidiócesis de El Salvador"@en
+      "Master Communications S.A. de C.V."@en
+      "Televisión Durán S.A. de C.V."@en
+      "Mario Luis Alabi Ramos"@en
+      "Al Murad Group"@en
+      "Al Arabiya"@en
+      "Middle East Business News"@en
+      "Dubai Media Incorporated"@en
+      "KIPCO"@en
+      "Mongolian Media Corporation"@en
+      "Skytel LLC"@en
+      "Media Group LLC"@en
+      "Reshet"@en
+      "Alexander Levin"@en
+      "Zebra TV Channels Ltd"@en
+      "Israeli Broadcasting Corporation"@en
+      "Israel Broadcasting Corporation"@en
+      "Second News Company"@en
+      "Israeli Public Broadcasting Corporation"@en
+      "Jewish Israel Channel Ltd"@en
+      "Ministry of Preschool Education"@en
+      "Firdavs Abdukholikov"@en
+      "Antenne Kärnten Regionalradio GmbH & Co KG"@en
+      "Antenne Steiermark Regionalradio GmbH & Co KG"@en
+      "ProSiebenSat.1 PULS 4"@en
+      "StudioK19 Gmbh"@en
+      "Russmedia"@en
+      "Community TV-GmbH"@en
+      "P3 Cable News GmbH"@en
+      "R9 Regional TV Austria GmbH"@en
+      "Red Bull Media House GmbH"@en
+      "Red Bull GmbH"@en
+      "TIROL TV GmbH"@en
+      "WH Media GmbH"@en
+      "Tahseen Khayat"@en
+      "Al-Mayadeen Media Network"@en
+      "Hezbollah"@en
+      "Pierre Daher"@en
+      "OTV Holding"@en
+      "RTS Radio Television Suisse"@en
+      "MeteoNews AG"@en
+      "IMMS"@en
+      "CH Media"@en
+      "Timedia Holding SA"@en
+      "OurFrame S.A."@en
+      "Emil Stojmenov"@en
+      "Risto Gogovski"@en
+      "América CV Network"@en
+      "Asociacion Evangelistica Cristo Viene"@en
+      "Iglesia La Familia de la Fé"@en
+      "Televicentro of Puerto Rico LLC"@en
+      "Senda Educational Broadcasting Inc"@en
+      "Educational"@en
+      "Puerto Rico Public Broadcasting Corporation"@en
+      "Telemundo of Puerto Rico LLC"@en
+      "Jb Media Group"@en
+      "ATV Limited"@en
+      "Multimedia Production Company"@en
+      "Bangla TV"@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel

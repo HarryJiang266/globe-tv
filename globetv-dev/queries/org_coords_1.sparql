@@ -1,0 +1,193 @@
+# 第 1 批（180 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      "Pluto TV"@en
+      "Paramount Skydance Corporation"@en
+      "Pluto Inc."@en
+      "Pluto TV Europe GmbH"@en
+      "Viaplay Group AB (publ)"@en
+      "VIMN Nordic AB"@en
+      "Viacom International Inc."@en
+      "The Walt Disney Company"@en
+      "Skydance Corporation"@en
+      "Reliance Industries(RIL)"@en
+      "JioStar India Pvt. Ltd."@en
+      "Comedy Partners"@en
+      "CBS Broadcasting Inc."@en
+      "MBC Group"@en
+      "BBC"@en
+      "Doordarshan"@en
+      "Prasar Bharati"@en
+      "Gazprom Media"@en
+      "China Central Television"@en
+      "Nickelodeon"@en
+      "VGTRK"@en
+      "Cyfrowy Polsat"@en
+      "AMC Networks Inc."@en
+      "ВГТРК"@en
+      "IRIB"@en
+      "Gem Group"@en
+      "JioStar"@en
+      "Albavisión"@en
+      "Zee Entertainment Enterprises Limited"@en
+      "Network18"@en
+      "Network18 Media & Investments Ltd"@en
+      "Persiana Media Group"@en
+      "Jawa Pos Multimedia"@en
+      "Сити Эдем Групп"@en
+      "Skydance EMEA"@en
+      "National Media Group"@en
+      "Televisa Networks"@en
+      "TVE"@en
+      "TRT"@en
+      "NBCUniversal"@en
+      "Zee Media"@en
+      "Zee Media Corporation Limited (ZMCL)"@en
+      "The Essel Group"@en
+      "Sony Pictures Networks India (SPNI)"@en
+      "Culver Max Entertainment Private Limited"@en
+      "Media Telecom"@en
+      "Red Media"@en
+      "InterraMedia"@en
+      "Lionsgate Studios Corp."@en
+      "ABC"@en
+      "Stream"@en
+      "Paramount Networks EMEAA"@en
+      "RTVE"@en
+      "Distance Learning Foundation"@en
+      "Ministry of Information"@en
+      "CBS News and Stations"@en
+      "Altice USA"@en
+      "Euronews SA"@en
+      "Comcast Corporation"@en
+      "Seventh-day Adventist Church"@en
+      "Qurate Retail Group"@en
+      "MBC"@en
+      "Stingray Group Inc."@en
+      "Telewizja Polsat"@en
+      "TV2 Média Csoport Kft."@en
+      "ETV"@en
+      "Eenadu Television Private Limited (ETV)"@en
+      "Digital telefamily"@en
+      "Altice Média"@en
+      "Euronews"@en
+      "Vietnam Television"@en
+      "3ABN"@en
+      "Danny and Linda Shelton"@en
+      "ESPN Inc."@en
+      "Colors"@en
+      "Government of India"@en
+      "Government of the Russian Federation"@en
+      "ORF"@en
+      "SPI International"@en
+      "Viasat Ukraine"@en
+      "Shahid"@en
+      "Sony Pictures Television"@en
+      "Raj"@en
+      "Raj Television Network"@en
+      "Sony Pictures Networks"@en
+      "BFM Régions"@en
+      "1+1 Media Group"@en
+      "Grupo Multimedios"@en
+      "Telewizja Polska"@en
+      "RCN Televisión"@en
+      "Radio Televizija Srbije"@en
+      "AMC Global Media"@en
+      "The E.W. Scripps Company"@en
+      "Independent"@en
+      "LLBN"@en
+      "Loma Linda Broadcasting Network Inc"@en
+      "Bennett Coleman and Company Limited (BCCL)"@en
+      "Ramoji Group"@en
+      "ARD"@en
+      "Love TV Channels S.L."@en
+      "RTL 102.500 Hit Radio S.R.L."@en
+      "Zylo"@en
+      "Albavisión México"@en
+      "China Global Television Network"@en
+      "China Media Group"@en
+      "Antena TV Group"@en
+      "Televiziunea Română"@en
+      "Religious"@en
+      "PBS"@en
+      "XITE"@en
+      "MFE - MediaForEurope"@en
+      "Rai"@en
+      "3Cat"@en
+      "Corporació Catalana de Mitjans Audiovisuals"@en
+      "International Media Investments (IMI) Holdings FZ LLC"@en
+      "Muslim Television Ahmadiyya International"@en
+      "Al-Shirkatul Islamiyyah"@en
+      "TVP"@en
+      "Organización Ardila Lülle"@en
+      "Islamic Republic of Iran Broadcasting"@en
+      "SBS"@en
+      "Rádio e Televisão de Portugal"@en
+      "State Committee of Turkmenistan on TV Radio and Film"@en
+      "Hearst Communications Inc."@en
+      "beIN Media Group"@en
+      "Scripps Networks"@en
+      "RTL Group"@en
+      "Latin Entertainment Group"@en
+      "Versant Media Group Inc."@en
+      "PBS Member Public Television Stations"@en
+      "Aastha"@en
+      "Vedic Broadcasting Limited (VBL)"@en
+      "Epic"@en
+      "The Epic Company"@en
+      "Times Network"@en
+      "NDTV"@en
+      "New Delhi Television Ltd"@en
+      "The Adani Group"@en
+      "TV9"@en
+      "Associated Broadcasting Company Pvt Ltd (ABCL)"@en
+      "Megha Engineering & Infrastructures Ltd (MEIL)"@en
+      "My Home Constructions Private Limited"@en
+      "PTC"@en
+      "PTC Network"@en
+      "Star Sports"@en
+      "Bridge Media"@en
+      "STS Media"@en
+      "Grupo Luksic"@en
+      "Viasat World LTD"@en
+      "BBC Studios"@en
+      "40media Group"@en
+      "Music Television of Ukraine"@en
+      "Inter Media Group"@en
+      "Surface TV"@en
+      "FTV Prima"@en
+      "Ho Chi Minh City Television Station"@en
+      "Nova Broadcasting doo"@en
+      "National State Television and Radio Company of the Republic of Belarus"@en
+      "Oireachtas Commission"@en
+      "A+E Global Media"@en
+      "EWTN"@en
+      "Fox Corporation"@en
+      "Rakuten Group Inc."@en
+      "Acharya Balkrishna"@en
+      "Kalaignar TV"@en
+      "Kalaignar TV Private Limited"@en
+      "The Times Group"@en
+      "Crystal Business System Ltd"@en
+      "MH One TV Network Pvt Ltd"@en
+      "Shemaroo Entertainment"@en
+      "Michel Adam Lisowski"@en
+      "Folx Network"@en
+      "Disney Entertainment"@en
+      "Rakuten TV"@en
+      "Paramount Global"@en
+      "Little Dot Studios Limited"@en
+      "All3Media Limited"@en
+      "RedBird IMI"@en
+      "Universal Music Group N.V."@en
+      "Starlight Media Group"@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel

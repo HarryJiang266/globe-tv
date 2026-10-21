@@ -1,0 +1,193 @@
+# 第 2 批（180 个机构名，覆盖频道最多的优先）
+SELECT ?name ?item ?coord ?countryLabel
+       (GROUP_CONCAT(DISTINCT ?alt; SEPARATOR="|") AS ?alts)
+WHERE {
+  VALUES ?name {
+      "National Public Television and Radio Company of Ukraine"@en
+      "Antenna Group"@en
+      "Telewizja BTB"@en
+      "Duna Médiaszolgáltató Nonprofit Zrt."@en
+      "AMC Networks Central Europe Kft."@en
+      "Blue Ant Media Corporation"@en
+      "CNC"@en
+      "Government of South Korea"@en
+      "Hellenic Broadcasting Corporation"@en
+      "The Walt Disney Company Portugal"@en
+      "Mana Church Inc"@en
+      "Khabar Agency"@en
+      "Mediacorp"@en
+      "RTHK"@en
+      "Lithuanian National Radio and Television"@en
+      "Trusted Media Brands Inc."@en
+      "Whiplash"@en
+      "Herring Networks"@en
+      "Beach TV Properties Inc."@en
+      "Cartoon Network"@en
+      "Sinclair Broadcast Group"@en
+      "Sony Pictures Entertainment"@en
+      "Eternal Word Television Network"@en
+      "The Hearst Corporation"@en
+      "Community Television Inc."@en
+      "Get After It Media"@en
+      "Cannella Media DTC"@en
+      "News12"@en
+      "Cisneros Media"@en
+      "Epoch Media Group"@en
+      "Starz Entertainment Corp."@en
+      "ABP"@en
+      "ABP Holdings"@en
+      "Odisha Television Network"@en
+      "Odisha Television Ltd."@en
+      "Enterr10 Television Pvt. Ltd."@en
+      "Goldmines Telefilms Pvt. Ltd."@en
+      "Manoranjan TV Group Limited"@en
+      "Sony Sports Network"@en
+      "ZEE5"@en
+      "VXDGroup"@en
+      "Groupe M6"@en
+      "ZDF"@en
+      "Autentic GmbH"@en
+      "Beta Film GmbH"@en
+      "EITB"@en
+      "13Go"@en
+      "Vytal Group"@en
+      "Canal+ Group"@en
+      "NPO"@en
+      "Eredivisie Media & Marketing CV"@en
+      "Insight TV"@en
+      "TV Entertainment Reality Network B.V."@en
+      "XITE Networks"@en
+      "Film.UA Group"@en
+      "Grupo Televisión Litoral"@en
+      "Grupo Televisa"@en
+      "Grupo ATV"@en
+      "Antena Group"@en
+      "Digital Media and Communications Zrt."@en
+      "Digdaya Duta Digital"@en
+      "Rogers Sports & Media"@en
+      "Caracol Televisión S.A."@en
+      "Government of Colombia"@en
+      "Czech Television"@en
+      "Stanice O a s"@en
+      "United Group"@en
+      "The Walt Disney Company Iberia S.L."@en
+      "Saudi Broadcasting Authority"@en
+      "Believers' Love World Incorporated"@en
+      "DPG Media"@en
+      "VRT"@en
+      "Nine Entertainment"@en
+      "Media One Group"@en
+      "Teleradio-Moldova"@en
+      "Public Service Media"@en
+      "NRK"@en
+      "Bahrain Radio and Television Corporation"@en
+      "We TV"@en
+      "AMC"@en
+      "Paramount Network Broadcasting Ltd"@en
+      "BET Networks"@en
+      "HBO"@en
+      "Cable News Network"@en
+      "NBC"@en
+      "Food Network"@en
+      "TelevisaUnivision"@en
+      "A+E Networks"@en
+      "Spanish Independent"@en
+      "Munhwa Broadcasting Corporation"@en
+      "STARZ"@en
+      "NBCUniversal Telemundo Enterprises"@en
+      "9X Media"@en
+      "9X Media Pvt. Ltd."@en
+      "B4U"@en
+      "B4U Television Network India Limited"@en
+      "Image Broadcasting"@en
+      "GoodNews"@en
+      "Goodnews Channel Pvt. Ltd."@en
+      "Kairali TV Network"@en
+      "Media Worldwide Limited"@en
+      "Pride East Entertainments Pvt. Ltd."@en
+      "Republic Media"@en
+      "ARG Outlier Media Pvt. Ltd."@en
+      "SVBC"@en
+      "Sri Venkateswara Bhakti Channel"@en
+      " Tirumala Tirupati Devasthanams (TTD)"@en
+      "ZillarBarta Network"@en
+      "TvikselTV"@en
+      "Autentic"@en
+      "Just Music Fernsehbetriebes GmbH"@en
+      "Seven.One Entertainment Group"@en
+      "Grupo Globo"@en
+      "Grupo Silvio Santos"@en
+      "Radio y Televisión de Andalucía"@en
+      "Department of Culture of the Basque Government"@en
+      "XPTV Global"@en
+      "PTV"@en
+      "Grupo Mix"@en
+      "America Movil"@en
+      "Televisión Nacional de Chile"@en
+      "Mega Media"@en
+      "Paramount Networks UK & Australia"@en
+      "National Geographic Society"@en
+      "Vivendi"@en
+      "France Télévisions"@en
+      "Volia"@en
+      "TV Azteca"@en
+      "Televisa"@en
+      "MVS Comunicaciones"@en
+      "Gobierno del Estado de Guanajuato"@en
+      "Televisoras Grupo Pacífico"@en
+      "Jiangsu Broadcasting Corporation"@en
+      "Intact Media Group"@en
+      "FILMBOX+"@en
+      "Indonesia Network"@en
+      "Edge Group"@en
+      "Bell Media"@en
+      "Canadian Broadcasting Corporation"@en
+      "Global Media"@en
+      "América Móvil S.A.B. de C.V."@en
+      "Vietnam Cable Television Corporation Joint Stock Company"@en
+      "Corporación Televicentro"@en
+      "Grupo SNT"@en
+      "BNT"@en
+      "CME"@en
+      "A1 Bulgaria"@en
+      "The Walt Disney Company Bulgaria EOOD"@en
+      "Motes & Ideias"@en
+      "Impresa"@en
+      "Media Capital"@en
+      "Iraqi Media Network"@en
+      "Saudi Research and Media Group"@en
+      "Qazaqstan Radio and Television Corporation"@en
+      "Australian Broadcasting Corporation"@en
+      "Telecorporación Salvadoreña"@en
+      "Zakir Naik"@en
+      "Lords Production Ltd"@en
+      "Mongolian National Broadcaster"@en
+      "National Television and Radio Company of Uzbekistan"@en
+      "SABC"@en
+      "Hrvatska Radiotelevizija"@en
+      "Vision Group"@en
+      "Radio Televisyen Malaysia"@en
+      "Lulzy Broadcasting OÜ"@en
+      "Myanmar Armed Forces"@en
+      "Al Araby"@en
+      "ElTR"@en
+      "SKA Telecom"@en
+      "PART"@en
+      "American Kennel Club"@en
+      "Anthem Sports & Entertainment"@en
+      "Fox Sports Media Group"@en
+      "Christian Broadcasting Network"@en
+      "The Walt Disney Company Latin America"@en
+      "CNBC"@en
+      "Disney Channels"@en
+      "Disney Kids & Family"@en
+      "Estrella Media"@en
+      "The Jukin Media Inc."@en
+  }
+  ?item rdfs:label ?name ;
+        wdt:P625 ?coord .
+  OPTIONAL { ?item wdt:P17 ?country }
+  OPTIONAL { ?item skos:altLabel ?alt . FILTER(lang(?alt) = "en") }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP BY ?name ?item ?coord ?countryLabel
