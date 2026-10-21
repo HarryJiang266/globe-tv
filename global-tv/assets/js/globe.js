@@ -239,6 +239,13 @@
        鼠标光标很细，19.5px 半径够用；手指接触面约 8~10mm，
        手机上必须放大，否则朋友点亮点经常点不中。 */
     this.hitR2 = COARSE_POINTER ? 950 : 380;
+    /* 地球仪上画哪些点，可用 URL 参数切（本地对比用）：
+         ?places=strict  只画能精确定位到城市的台
+         ?places=all     连虚拟网络频道一起画（看旧效果）
+       位置等级 p：0 精确定位 / 1 城市加权兜底 / 2 虚拟网络频道 */
+    var q = (typeof location !== 'undefined' && location.search) || '';
+    this.strictPlaces = /[?&]places=strict\b/.test(q);
+    this.showVirtual = /[?&]places=all\b/.test(q);
     /* 亮点绘制参数（世界坐标单位，可调）。
        亮点改成全量后总数上万，尺寸必须随国家密度收缩，
        否则印度、美国这种密区会糊成一块亮片。 */
@@ -468,6 +475,11 @@
     for (var i = 0; i < list.length; i++) {
       var ch = list[i];
       if (this.filterPred && !this.filterPred(ch)) continue;
+      var p = ch.p || 0;
+      // 虚拟网络频道（Pluto / Roku 这类 FAST）没有实体台址，不上地球仪
+      if (p === 2 && !this.showVirtual) continue;
+      // ?places=strict：只画能精确定位到城市的台，其余（查不到具体位置的）也不画
+      if (this.strictPlaces && p !== 0) continue;
       (byCountry[ch.c] || (byCountry[ch.c] = [])).push(ch);
     }
     this.byCountry = byCountry;

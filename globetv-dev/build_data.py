@@ -18,6 +18,8 @@ from collections import defaultdict, Counter
 from PIL import Image, ImageDraw
 
 HERE = os.path.dirname(os.path.abspath(__file__))          # globetv-dev/
+sys.path.insert(0, HERE)
+import station_places                                       # 频道实际位置解析
 ROOT = os.path.join(os.path.dirname(HERE), 'global-tv')    # 发布目录（只放网站本身）
 # 原始 API 缓存（约 17MB）默认放在项目**外面**，免得发布上线时把它一起传上去。
 # 想换位置就设环境变量 GLOBETV_CACHE。
@@ -304,43 +306,92 @@ def main():
     polys_by_cc, all_rings = topo_rings_by_country(topo, ccn3_to_cca2)
     polys_by_cc['UK'] = polys_by_cc.get('GB', [])      # iptv-org 用 UK 而不是 GB
 
-    # 重点是：用真实国界采样，让亮点落在该国陆地上。
-    # 旧写法（以质心为圆心、按面积估半径撒点）会把点撒进海里 ——
-    # 实测有 15.5% 的频道坐标落在海上，用户直接看出来了。
+    # ------------------------------------------------------------ 坐标
+    # 三级定位（见 station_places.py）：
+    #   city  频道名里写了城市 -> 该城市真实坐标
+    #   org   命中「广播机构 -> 总部城市」表 -> 总部城市
+    #   其余（含 Pluto 这类无实体台址的虚拟频道）-> 按城市人口权重落在该国城市里
+    #
+    # 只有该国在 GeoNames 里没有城市数据时，才退回最早的「国界内均匀撒点」。
+    # 电视台都在城市里，几何均匀撒点会把一堆频道撒进荒漠和海面。
     out_channels, country_out = [], {}
     n_by_poly = n_fallback = 0
+    stat = Counter()
     for cc, items in sorted(by_country.items(), key=lambda kv: -len(kv[1])):
         items.sort(key=lambda r: r[1]['name'].lower())
         n = len(items)
-        pts = sample_in_country(polys_by_cc.get(cc), n,
-                                seed=(sum(ord(ch) for ch in cc) * 7919) % 100000)
-        if len(pts) == n:
-            n_by_poly += n
-        else:
-            # 拓扑里没有这个国家（XK / INT，以及新加坡、马尔代夫、马耳他这些
-            # 110m 分辨率下不收录的小岛国），退回质心圆撒点。
-            # 半径按真实面积算、下限压到 0.18°：小岛国用 1° 以上的半径
-            # 会把亮点散到周围海面上（实测新加坡 22 个里有 14 个在海上）。
-            n_fallback += n
-            base_lat, base_lon = latlng[cc]
-            coslat = max(0.22, math.cos(math.radians(base_lat)))
-            rmax = max(0.18, min(9.0, 0.9 * math.sqrt(max(area.get(cc) or 0, 1)) / 111.0))
-            pts = []
-            for i in range(n):
-                rad = rmax * math.sqrt((i + 0.5) / n)
-                th = i * GOLD
-                pts.append((base_lon + rad * math.cos(th) / coslat,
-                            max(-84.0, min(84.0, base_lat + rad * math.sin(th)))))
-        for (lo, la), (cid, c, _, slist) in zip(pts, items):
-            out_channels.append({
+
+        resolved = []          # (lat, lon, kind)
+        for (cid, c, _, slist) in items:
+            kind, la, lo, _label = station_places.resolve(
+                c.get('network'), c.get('owners'), c['name'],
+                (c.get('alt_names') or [None])[0] or '', cc)
+            stat[kind or 'none'] += 1
+            resolved.append((la, lo, kind) if (kind in ('city', 'org') and la is not None)
+                            else (None, None, kind or 'none'))
+
+        result = [None] * n
+        # 精确命中的：按城市分组，组内环形铺开（同城几十个台不会叠成一点）
+        groups = {}
+        for i, p in enumerate(resolved):
+            if p[0] is not None:
+                groups.setdefault((round(p[0], 2), round(p[1], 2)), []).append(i)
+        for (la, lo), idxs in groups.items():
+            for i, (plon, plat) in zip(idxs, station_places.spread_in_city(la, lo, len(idxs))):
+                result[i] = (plon, plat)
+
+        # 其余：城市加权
+        rest = [i for i, p in enumerate(resolved) if p[0] is None]
+        if rest:
+            pts = station_places.city_weighted_points(
+                cc, len(rest), seed=(sum(ord(ch) for ch in cc) * 7919) % 100000)
+            if len(pts) != len(rest):
+                # GeoNames 没这个国家的城市（XK / INT 等），退回国界内均匀撒点
+                pts = sample_in_country(polys_by_cc.get(cc), len(rest),
+                                        seed=(sum(ord(ch) for ch in cc) * 7919) % 100000)
+                if len(pts) == len(rest):
+                    n_by_poly += len(rest)
+                else:
+                    n_fallback += len(rest)
+                if len(pts) != len(rest):
+                    # 拓扑里也没有：用质心圆撒点兜底
+                    n_fallback += len(rest)
+                    base_lat, base_lon = latlng[cc]
+                    coslat = max(0.22, math.cos(math.radians(base_lat)))
+                    rmax = max(0.18, min(9.0, 0.9 * math.sqrt(max(area.get(cc) or 0, 1)) / 111.0))
+                    pts = []
+                    for i in range(len(rest)):
+                        rad = rmax * math.sqrt((i + 0.5) / len(rest))
+                        th = i * GOLD
+                        pts.append((base_lon + rad * math.cos(th) / coslat,
+                                    max(-84.0, min(84.0, base_lat + rad * math.sin(th)))))
+            for i, (plon, plat) in zip(rest, pts):
+                result[i] = (plon, plat)
+
+        pts = result
+        for (lo, la), (cid, c, _, slist), (_la, _lo, kind) in zip(pts, items, resolved):
+            rec = {
                 'i': cid, 'n': c['name'], 'a': (c.get('alt_names') or [None])[0] or '',
                 'c': cc, 'k': c.get('categories') or [], 'w': c.get('website') or '', 'o': '',
                 'la': round(la, 3), 'lo': round(lo, 3),
                 's': [[s['url'], s.get('quality') or '', s.get('referrer') or '', s.get('user_agent') or ''] for s in slist],
-            })
+            }
+            # 位置等级：0 精确定位（城市级/机构级）| 1 城市加权兜底 | 2 虚拟网络频道（无实体台址）
+            # 0 不写字段，省一点体积；前端用 (ch.p || 0) 读
+            if kind == 'fast':
+                rec['p'] = 2
+            elif kind != 'city' and kind != 'org':
+                rec['p'] = 1
+            out_channels.append(rec)
         country_out[cc] = {'n': cc_info[cc]['n'], 'f': cc_info[cc]['f'],
                            'la': round(latlng[cc][0], 3), 'lo': round(latlng[cc][1], 3), 'c': n}
-    print('坐标采样  国界内 %d 个 / 退回国心 %d 个' % (n_by_poly, n_fallback))
+    tot = sum(stat.values()) or 1
+    print('坐标定位  城市级 %d (%.1f%%) / 机构级 %d (%.1f%%) / 城市加权兜底 %d (%.1f%%)'
+          % (stat['city'], stat['city'] * 100.0 / tot,
+             stat['org'], stat['org'] * 100.0 / tot,
+             stat['none'] + stat['fast'], (stat['none'] + stat['fast']) * 100.0 / tot))
+    print('          其中无实体台址的虚拟频道 %d 个；无城市数据退回旧撒点 %d 个'
+          % (stat['fast'], n_by_poly + n_fallback))
 
     # ------------------------------------------------------------ 台标
     best_logo = {}
