@@ -29,10 +29,11 @@
   f.href = 'assets/fonts/InstrumentSerif-Regular-latin.woff2';
   document.head.appendChild(f);
 
-  var l = document.createElement('link');
-  l.rel = 'preload'; l.as = 'image';
-  l.href = 'assets/img/' + (dark ? 'earth-dark.jpg' : 'earth-light.jpg');
-  document.head.appendChild(l);
+  // Preload the active theme map so the globe doesn't wait on first paint.
+  var mapPre = document.createElement('link');
+  mapPre.rel = 'preload'; mapPre.as = 'image';
+  mapPre.href = dark ? 'assets/img/earth-dark.jpg' : 'assets/img/earth-light.jpg';
+  document.head.appendChild(mapPre);
 
   if (window.fetch && 'DecompressionStream' in window) {
     window.__tvGz = fetch('assets/js/data/channels.json.gz')
@@ -46,6 +47,7 @@
 <!-- ===================== 背景层 ===================== -->
 <canvas id="globe-canvas"></canvas>
 <div class="vignette" aria-hidden="true"></div>
+<div class="preview-badge">本地效果预览 · 原底图</div>
 
 <!-- ===================== 载入层 ===================== -->
 <div class="boot" id="boot">

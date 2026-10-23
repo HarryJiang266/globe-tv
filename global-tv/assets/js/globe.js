@@ -161,6 +161,33 @@
 
   var DEG = Math.PI / 180;
 
+  function smoothstep(a, b, x) {
+    var t = Math.max(0, Math.min(1, (x - a) / (b - a)));
+    return t * t * (3 - 2 * t);
+  }
+
+  // Preview-only: an original graticule, without coastlines or territory boundaries.
+  function makeSchematicTexture(theme) {
+    var c = document.createElement('canvas'); c.width = 2048; c.height = 1024;
+    var ctx = c.getContext('2d'), dark = theme === 'dark';
+    ctx.fillStyle = dark ? '#29363f' : '#c7d3d7'; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.strokeStyle = dark ? 'rgba(135,169,171,.14)' : 'rgba(61,87,99,.13)';
+    ctx.lineWidth = 1;
+    for (var x = 0; x < c.width; x += c.width / 24) {ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,c.height);ctx.stroke();}
+    for (var y = 0; y <= c.height; y += c.height / 12) {ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke();}
+    var tex = new THREE.CanvasTexture(c); tex.wrapS = THREE.RepeatWrapping;
+    return tex;
+  }
+
+  var CONTINENT_LABELS = [
+    ['Africa', 4, 20], ['Europe', 51, 17], ['Asia', 40, 86],
+    ['North America', 42, -102], ['South America', -18, -58],
+    ['Oceania', -23, 139], ['Antarctica', -77, 20]
+  ];
+  // Visual priority only: not a sovereignty classification. Regions retain qualified names.
+  var LARGE_LABELS = 'CN IN RU US CA BR AU AR MX ZA EG DZ CD SA IR TR FR DE ES GB UK IT SE NO FI PL UA KZ ID JP'.split(' ');
+  var MEDIUM_LABELS = 'NG ET KE TZ MA LY SD AO MZ MG NA ZM BW PE CL CO VE EC BO PK AF TH VN MY PH KR MN UZ IQ SY JO OM YE NZ RO GR PT HU CZ AT CH BE NL DK IE BY LT LV EE RS BG TN GH CM SN'.split(' ');
+
   // 触屏（手机/平板）的指针是 coarse，命中区域要放宽
   var COARSE_POINTER = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 
@@ -223,6 +250,10 @@
     this.yaw = -1.920;
     this.pitch = 0.262;
     this.dist = 3.1;
+    this.zoomTarget = Math.log(this.dist);
+    this.zoomVelocity = 0;
+    this.zoomActive = false;
+    this._wheelDirection = 0;
     this.target = null;
     this.drag = null;
     this.pinch = null;
@@ -573,7 +604,96 @@
     this._tmp2 = new THREE.Vector3();
   };
 
-  GlobeView.prototype.setCountries = function (c) { this.countries = c; };
+  GlobeView.prototype.setCountries = function (c) {
+    this.countries = c;
+    this._buildLabels(c);
+  };
+
+  GlobeView.prototype._buildLabels = function (countries) {
+    if (this.labelLayer) this.labelLayer.remove();
+    var layer = document.createElement('div');
+    layer.className = 'globe-labels'; layer.setAttribute('aria-hidden', 'true');
+    this.canvas.parentNode.appendChild(layer);
+    this.labelLayer = layer; this.labels = [];
+    var self = this;
+    function add(id, name, lat, lon, tier, rank) {
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+      var node = document.createElement('span');
+      node.className = 'globe-label ' + (tier < 0 ? 'globe-label-continent' : 'globe-label-country');
+      node.textContent = name; node.dataset.label = id; node.style.opacity = '0';
+      layer.appendChild(node);
+      var la = lat * DEG, lo = lon * DEG;
+      self.labels.push({id:id, name:name, tier:tier, rank:rank, node:node,
+        point:new THREE.Vector3(Math.cos(la)*Math.cos(lo),Math.sin(la),-Math.cos(la)*Math.sin(lo)).multiplyScalar(1.003),
+        alpha:0, desired:0, box:null, width:0, height:0});
+    }
+    CONTINENT_LABELS.forEach(function (c, i) {add('continent-' + i,c[0],c[1],c[2],-1,i);});
+    Object.keys(countries).sort().forEach(function (cc, i) {
+      var c = countries[cc], tier = LARGE_LABELS.indexOf(cc) >= 0 ? 0 : MEDIUM_LABELS.indexOf(cc) >= 0 ? 1 : 2;
+      var names = {HK:'Hong Kong, China',MO:'Macao, China',TW:'Taiwan, China',TR:'Türkiye'};
+      add(cc,names[cc] || c.n,c.la,c.lo,tier,100 + tier * 1000 + i);
+    });
+    this.labels.sort(function (a,b) {return a.rank-b.rank;});
+    this._labelVector = new THREE.Vector3();
+    this._measureLabels();
+    if(document.fonts) document.fonts.ready.then(function(){self._measureLabels();});
+  };
+
+  GlobeView.prototype._measureLabels = function () {
+    if (!this.labels) return;
+    this.labels.forEach(function (l) {l.width=l.node.offsetWidth;l.height=l.node.offsetHeight;});
+    this._labelMeasureWidth = this._w;
+  };
+
+  GlobeView.prototype._updateLabels = function (dt, now) {
+    if (!this.labels) return;
+    if (this._labelMeasureWidth !== this._w) this._measureLabels();
+    // All fades derive from the rendered distance (not input direction or zoom target).
+    var dist = this.dist;
+    var levels = [1-smoothstep(2.55,3.10,dist),1-smoothstep(1.92,2.65,dist),1-smoothstep(1.50,2.05,dist)];
+    var continentAlpha = smoothstep(2.48,3.18,dist);
+    var budget = Math.round((this._w < 600 ? 10 : 16) + (1-smoothstep(1.28,3.1,dist)) * (this._w < 600 ? 20 : 42));
+    var pad = 7, width=this._w, height=this._h, v=this._labelVector;
+    function intersects(a,b) {return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;}
+    if (!this._labelUiAt || now-this._labelUiAt > 100) {
+      this._labelUiAt=now; this._labelUi=[];
+      var self=this;
+      document.querySelectorAll('.topbar,.hud,.zoomctl,.drawer.is-open,.player:not([hidden]),.tip:not([hidden]),.suggest:not([hidden]),.preview-badge').forEach(function (node) {
+        var r=node.getBoundingClientRect(); if(r.width && r.height) self._labelUi.push({left:r.left-pad,right:r.right+pad,top:r.top-pad,bottom:r.bottom+pad});
+      });
+    }
+    var occupied=this._labelUi.slice(), count=0;
+    for(var i=0;i<this.labels.length;i++) {
+      var l=this.labels[i]; l.desired=0; l.box=null;
+      var base=l.tier < 0 ? continentAlpha : levels[l.tier];
+      if(base < .005 && l.alpha < .005) continue;
+      v.copy(l.point).applyMatrix4(this.group.matrixWorld);
+      var facing=(v.z*this.dist-v.lengthSq()) / v.distanceTo(this.camera.position);
+      var edge=smoothstep(.02,.30,facing);
+      if(edge <= 0) {l.alpha=0;l.node.style.opacity='0';continue;}
+      v.project(this.camera);
+      var x=(v.x*.5+.5)*width, y=(-v.y*.5+.5)*height;
+      var box={left:x-l.width/2-pad,right:x+l.width/2+pad,top:y-l.height/2-pad,bottom:y+l.height/2+pad};
+      l.node.style.transform='translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) translate(-50%,-50%)';
+      l.box=box;
+      if(v.z < -1 || v.z > 1 || box.left<10 || box.right>width-10 || box.top<10 || box.bottom>height-10 || base*edge<.02) continue;
+      if(l.tier>=0 && count>=budget) continue;
+      var collision=occupied.some(function (r) {return intersects(box,r);});
+      if(collision) continue;
+      l.desired=base*edge*(l.tier < 0 ? .86 : .90);
+      occupied.push(box); if(l.tier>=0) count++;
+    }
+    // Let outgoing labels clear their space before a colliding newcomer fades in.
+    var fading=this.labels.filter(function (l) {return l.desired===0 && l.alpha>.055 && l.box;});
+    var inRate=1-Math.exp(-dt/.14), outRate=1-Math.exp(-dt/.085);
+    for(var j=0;j<this.labels.length;j++) {
+      var item=this.labels[j], goal=item.desired;
+      if(goal>item.alpha && item.alpha<.08 && item.box && fading.some(function (l) {return l!==item && intersects(l.box,item.box);})) goal=0;
+      item.alpha+=(goal-item.alpha)*(goal>item.alpha?inRate:outRate);
+      if(item.alpha<.003) item.alpha=0;
+      item.node.style.opacity=item.alpha.toFixed(3);
+    }
+  };
 
   // ------------------------------------------------------------ 交互
   GlobeView.prototype._bindPointer = function () {
@@ -654,25 +774,54 @@
     });
     c.addEventListener('wheel', function (e) {
       e.preventDefault();
-      var k = Math.exp(e.deltaY * 0.0012);
-      self.setDist(self.dist * k);
+      var delta = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? self._h : 1);
+      if (!Number.isFinite(delta) || delta === 0) return;
+      delta = Math.max(-240, Math.min(240, delta));
+      var direction = delta < 0 ? -1 : 1;
+      // On reversal discard queued distance and velocity, without snapping the camera.
+      if (direction !== self._wheelDirection || !self.zoomActive) {
+        self.zoomTarget = Math.log(self.dist);
+        if (direction !== self._wheelDirection) self.zoomVelocity = 0;
+      }
+      self._wheelDirection = direction;
+      self._queueZoom(self.zoomTarget + delta * 0.0012);
     }, { passive: false });
     c.addEventListener('dblclick', function () { self.reset(); });
   };
 
   GlobeView.prototype.setDist = function (d) {
     this.dist = Math.max(1.28, Math.min(4.4, d));
+    this.zoomTarget = Math.log(this.dist);
+    this.zoomVelocity = 0; this.zoomActive = false; this._wheelDirection = 0;
+    if (this.target) this.target.zoomInterrupted = true;
+  };
+
+  GlobeView.prototype._queueZoom = function (logDistance) {
+    this.zoomTarget = Math.max(Math.log(1.28), Math.min(Math.log(4.4), logDistance));
+    this.zoomActive = true;
+    if (this.target) this.target.zoomInterrupted = true;
   };
 
   GlobeView.prototype.zoomBy = function (f) {
-    var self = this, from = this.dist, to = Math.max(1.28, Math.min(4.4, this.dist * f));
-    var t0 = performance.now();
-    (function step() {
-      var k = Math.min(1, (performance.now() - t0) / 320);
-      var e = 1 - Math.pow(1 - k, 3);
-      self.dist = from + (to - from) * e;
-      if (k < 1) requestAnimationFrame(step);
-    })();
+    var direction=f < 1 ? -1 : 1;
+    var base=this.zoomActive && direction===this._wheelDirection ? this.zoomTarget : Math.log(this.dist);
+    if(direction!==this._wheelDirection) this.zoomVelocity=0;
+    this._wheelDirection=direction;
+    this._queueZoom(base + Math.log(f));
+  };
+
+  GlobeView.prototype._advanceZoom = function (dt) {
+    if (!this.zoomActive) return;
+    // Exact critically damped spring in logarithmic distance; stable at variable FPS.
+    var x = Math.log(this.dist), offset=x-this.zoomTarget, omega=20;
+    var decay=Math.exp(-omega*dt), b=this.zoomVelocity+omega*offset;
+    var next=this.zoomTarget+(offset+b*dt)*decay;
+    this.zoomVelocity=(this.zoomVelocity-omega*b*dt)*decay;
+    if ((this.zoomTarget-x)*(this.zoomTarget-next)<0) {next=this.zoomTarget;this.zoomVelocity=0;}
+    this.dist=Math.max(1.28,Math.min(4.4,Math.exp(next)));
+    if (Math.abs(next-this.zoomTarget)<.00001 && Math.abs(this.zoomVelocity)<.0003) {
+      this.dist=Math.exp(this.zoomTarget);this.zoomVelocity=0;this.zoomActive=false;
+    }
   };
 
   // 旋转到指定经纬度（最短路）
@@ -682,6 +831,7 @@
   GlobeView.prototype.centerLat = function () { return this.pitch / DEG; };
 
   GlobeView.prototype.focusTo = function (lat, lon, dist, dur) {
+    this.zoomTarget = Math.log(this.dist); this.zoomVelocity=0; this.zoomActive=false; this._wheelDirection=0;
     var ty = this.toYaw(lon), tp = lat * DEG;
     var cy = this.yaw;
     var d = ty - cy;
@@ -802,6 +952,9 @@
       self._raf = requestAnimationFrame(frame);
       var now = performance.now();
       var time = now / 1000;
+      var dt = Math.min(.25, Math.max(.001, (now-(self._lastFrame || now-16.667))/1000));
+      self._lastFrame=now;
+      self._advanceZoom(dt);
 
       if (self.target) {
         var tg = self.target;
@@ -809,7 +962,10 @@
         var e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
         self.yaw = tg.y0 + (tg.yaw - tg.y0) * e;
         self.pitch = tg.p0 + (tg.pitch - tg.p0) * e;
-        self.dist = tg.d0 + (tg.dist - tg.d0) * e;
+        if (!tg.zoomInterrupted) {
+          self.dist = tg.d0 + (tg.dist - tg.d0) * e;
+          self.zoomTarget = Math.log(self.dist);
+        }
         if (k >= 1) self.target = null;
       } else if (!self.drag && !self.pinch) {
         // 惯性
@@ -836,6 +992,7 @@
       self.camera.position.z = self.dist;
       self.camera.lookAt(0, 0, 0);
       self.camera.updateMatrixWorld();
+      self._updateLabels(dt, now);
 
       if (self.hoverIndex >= 0) {
         self._placeSprite(self.hoverSprite, self.hoverIndex, 0.05 * Math.min(1.5, 3.1 / self.dist));
