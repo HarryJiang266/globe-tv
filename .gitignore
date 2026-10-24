@@ -30,3 +30,7 @@ globetv-dev/.devcert/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# ---------------------------------------------------------------- 构建产物
+# 单文件发布包（build_single.py 生成，5MB 左右，不入库）
+dist-single/

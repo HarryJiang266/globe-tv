@@ -100,6 +100,7 @@ python -m http.server 8777
 cd globetv-dev
 python build_data.py     # 需要 Pillow；产出数据 + 两张地球贴图
 python bundle.py         # 改过 global-tv/assets/js/*.js 后必须重跑
+python build_single.py   # 可选：把整站压成一个 index.html（发布通道只收入口 HTML 时用）
 ```
 
 ## 目录结构
@@ -110,7 +111,8 @@ python bundle.py         # 改过 global-tv/assets/js/*.js 后必须重跑
 │   ├── index.html
 │   └── assets/{css,js,img,fonts,vendor}
 ├── globetv-dev/          ← 构建与测试脚本（不部署）
-│   ├── build_data.py     拉取数据 + 绘制地球贴图
+│   ├── build_data.py     拉取数据 + 绘制地球贴图（--texture-only 只重做底图）
+│   ├── build_single.py   把整站压成单文件 index.html（应急发布用）
 │   ├── bundle.py         把 4 个 JS 源文件合并成 app.bundle.js
 │   ├── serve_https.py    本地 HTTPS 服务（自签证书，自动生成）
 │   └── verify_*.js       端到端测试（真实浏览器驱动）
@@ -128,7 +130,7 @@ python bundle.py         # 改过 global-tv/assets/js/*.js 后必须重跑
 | 3D 渲染 | three.js r150，手写 GLSL（球面着色、点精灵亮点、大气辉光、星点） |
 | 视频播放 | hls.js 1.5.17（按需加载）+ 原生 `<video>` |
 | 前端 | 无框架、无构建产物依赖，原生语法，4 个源文件由脚本合并成 1 个请求 |
-| 数据 | iptv-org 公共 API + world-atlas 国界拓扑（Natural Earth 110m） |
+| 数据 | iptv-org 公共 API + world-atlas 国界拓扑（Natural Earth：贴图 50m、落点采样 110m） |
 | 构建 / 测试 | Python（Pillow 绘贴图）+ Node（CDP 驱动真实浏览器做端到端验收） |
 
 **运行时零依赖**：网站是纯静态文件，不需要 npm、不需要打包器、不需要服务端。
@@ -161,7 +163,7 @@ python bundle.py         # 改过 global-tv/assets/js/*.js 后必须重跑
 
 - 频道 / 线路 / 分类 / 台标 —— [iptv-org](https://github.com/iptv-org/iptv)
 - 国别经纬度 —— [world-countries](https://www.npmjs.com/package/world-countries)
-- 世界地图轮廓 —— [world-atlas](https://www.npmjs.com/package/world-atlas)（Natural Earth 110m）
+- 世界地图轮廓 —— [world-atlas](https://www.npmjs.com/package/world-atlas)（Natural Earth；贴图用 50m，落点采样用 110m）
 - 视觉语言参考 —— [radiocast.co](https://www.radiocast.co/)
 - 字体 —— Instrument Serif
 

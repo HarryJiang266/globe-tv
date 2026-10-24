@@ -38,6 +38,9 @@ SOURCES = {
     'logos': 'https://iptv-org.github.io/api/logos.json',
     'world': 'https://cdn.jsdelivr.net/npm/world-countries@5.1.0/countries.json',
     'topo': 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json',
+    # 1:5000 万版本，轮廓点数约 10 倍。只在出高分辨率底图时用（--topo50）：
+    # 采样落点仍走 110m，保证频道坐标和已有数据一致。
+    'topo50': 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json',
 }
 
 
@@ -434,11 +437,29 @@ def main():
           % (len(raw) / 1048576, os.path.getsize(os.path.join(DATA, 'channels.json.gz')) / 1048576,
              len(out_channels), len(country_out), payload['meta']['streams']))
 
-    # ------------------------------------------------------------ 地图轮廓
+    # ------------------------------------------------------------ 地图轮廓 + 贴图
     # 直接复用上面采样时解出来的轮廓，不再重复解析一遍 topojson
-    rings = all_rings
-    print('地图轮廓  %d 个环 / %d 个点' % (len(rings), sum(len(r) for r in rings)))
+    build_textures(all_rings)
 
+    print('\n前 10 个国家：')
+    for cc, items in sorted(by_country.items(), key=lambda kv: -len(kv[1]))[:10]:
+        print('   %-4s %-20s %4d 个频道' % (cc, cc_info[cc]['n'], len(items)))
+
+
+
+def build_textures(rings, tex_dir=None, tex_width=4096, supersample=2):
+    """把世界轮廓渲染成两张等距圆柱投影贴图（深色 / 浅色）。
+
+    main() 直接复用采样时解出来的轮廓；只想重做底图时用 --texture-only，
+    不会触发频道数据的重新抓取与重建。
+
+    tex_width 默认 4096（高 2048）。缩放放开到 dist=1.28 后，4096 宽的贴图
+    在最近处会被放大到 7 倍左右，海岸线糊成一片；这时可以用 --width 8192
+    出 2 倍分辨率的贴图。线宽 / 经纬线按 tex_width/4096 同比放大，保证
+    球面上的相对粗细不变，只是边缘更清楚。
+    """
+    tex_dir = tex_dir or TEX
+    print('地图轮廓  %d 个环 / %d 个点' % (len(rings), sum(len(r) for r in rings)))
     # ------------------------------------------------------------ 贴图
     # 预处理成可直接绘制的环：经度解开 + 补 ±360° 副本（覆盖接缝）
     def copies(pts):
@@ -482,8 +503,11 @@ def main():
         coast_lines.append((ur, True))
 
     def render_texture(path, theme):
-        W, H, S = 4096, 2048, 2
+        W, H, S = tex_width, tex_width // 2, supersample
         W2, H2 = W * S, H * S
+        # 线宽随贴图宽度同比放大（4096 宽时就是原来的 1.6px 海岸线）
+        lw = max(1, int(round(1.6 * S * tex_width / 4096.0)))
+        gw = max(1, int(round(1.0 * S * tex_width / 4096.0)))
 
         def px(lon, lat):
             return ((lon + 180.0) / 360.0 * W2, (90.0 - lat) / 180.0 * H2)
@@ -544,19 +568,19 @@ def main():
                     continue
                 if closed:
                     poly = poly + [poly[0]]
-                ld.line(poly, fill=255, width=max(1, int(1.6 * S)), joint='curve')
+                ld.line(poly, fill=255, width=lw, joint='curve')
         line_s = line.resize((W, H), Image.LANCZOS)
 
         grat_l = Image.new('L', (W2, H2), 0)
         gd = ImageDraw.Draw(grat_l)
         for lon in range(-180, 181, 15):
-            gd.line([(px(lon, -90)[0], 0), (px(lon, 90)[0], H2)], fill=255, width=S)
+            gd.line([(px(lon, -90)[0], 0), (px(lon, 90)[0], H2)], fill=255, width=gw)
         # 纬线只画到 ±60°：±75° 那两条在贴图上是横线，但到了球面上、
         # 视线正对极点时会变成一个以极点为圆心的突兀圆环（用户反馈过）。
         # 极区保持干净，不要再把范围改回 ±75。
         for lat in range(-60, 61, 15):
             y = px(0, lat)[1]
-            gd.line([(0, y), (W2, y)], fill=255, width=S)
+            gd.line([(0, y), (W2, y)], fill=255, width=gw)
         grat_s = grat_l.resize((W, H), Image.LANCZOS)
 
         base = Image.new('RGB', (W, H), ocean)
@@ -566,13 +590,36 @@ def main():
         base.save(path, 'JPEG', quality=85, optimize=True)
         print('%-22s %.2f MB' % (os.path.basename(path), os.path.getsize(path) / 1048576))
 
-    render_texture(os.path.join(TEX, 'earth-dark.jpg'), 'dark')
-    render_texture(os.path.join(TEX, 'earth-light.jpg'), 'light')
+    render_texture(os.path.join(tex_dir, 'earth-dark.jpg'), 'dark')
+    render_texture(os.path.join(tex_dir, 'earth-light.jpg'), 'light')
+    print('贴图尺寸  %dx%d（超采样 %dx）' % (tex_width, tex_width // 2, supersample))
 
-    print('\n前 10 个国家：')
-    for cc, items in sorted(by_country.items(), key=lambda kv: -len(kv[1]))[:10]:
-        print('   %-4s %-20s %4d 个频道' % (cc, cc_info[cc]['n'], len(items)))
 
+
+
+def texture_only():
+    """只重建两张地球贴图，不碰频道数据（频道重建要拉十几 MB 的 API）。
+
+    用法：python build_data.py --texture-only [--width 8192] [--out 目录]
+    """
+    tex_width = 4096
+    if '--width' in sys.argv:
+        tex_width = int(sys.argv[sys.argv.index('--width') + 1])
+    out_dir = None
+    if '--out' in sys.argv:
+        out_dir = sys.argv[sys.argv.index('--out') + 1]
+    world = fetch('world', SOURCES['world'])
+    topo = fetch('topo50' if '--topo50' in sys.argv else 'topo',
+                SOURCES['topo50' if '--topo50' in sys.argv else 'topo'])
+    ccn3_to_cca2 = {}
+    for w in world:
+        if w.get('ccn3') and w.get('cca2'):
+            ccn3_to_cca2[str(w['ccn3']).zfill(3)] = w['cca2']
+    _polys, all_rings = topo_rings_by_country(topo, ccn3_to_cca2)
+    build_textures(all_rings, tex_dir=out_dir, tex_width=tex_width)
 
 if __name__ == '__main__':
-    main()
+    if '--texture-only' in sys.argv:
+        texture_only()
+    else:
+        main()

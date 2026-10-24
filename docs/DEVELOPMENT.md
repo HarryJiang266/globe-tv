@@ -31,7 +31,7 @@ global-tv/
     │   ├── boot.js             数据加载（gz 解压）+ 启动调度
     │   ├── changelog.js        更新记录（发版时改这里）
     │   └── app.bundle.js       ↑ 上面 5 个的合并产物（线上只加载这一个）
-    ├── img/earth-{dark,light}.jpg   4096×2048 等距圆柱投影贴图
+    ├── img/earth-{dark,light}.jpg   8192×4096 等距圆柱投影贴图
     └── vendor/                 three.js r150；hls.js（按需加载）
 ```
 
@@ -75,7 +75,8 @@ python bundle.py         # 合并 5 个 JS 源文件 → global-tv/assets/js/app
 2. 按「HTTPS 优先 → m3u8 优先 → 清晰度」挑选每个频道的线路，最多留 5 条
 3. **按真实国界采样**给每个频道分配坐标（见下文「亮点落点」）
 4. 产出 `channels.js` + `channels.json.gz`（同一份数据的两种封装）
-5. 用 Pillow 把世界地图画成两张 4096×2048 的等距圆柱投影贴图
+5. 用 Pillow 把世界地图画成两张 8192×4096 的等距圆柱投影贴图
+   （`python build_data.py --texture-only --width 8192 --topo50` 可以只重做底图，不碰频道数据）
 
 ⚠️ **改了 `global-tv/assets/js/*.js` 后必须重跑 `bundle.py`**。
 页面加载的是 `app.bundle.js`，不重新打包的话改动不会生效 —— 这是最常见的"改了没反应"。

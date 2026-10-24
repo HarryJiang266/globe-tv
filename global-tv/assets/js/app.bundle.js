@@ -14,16 +14,27 @@
       改完必须跑一次 `python bundle.py` 重新打包，否则页面用的还是旧的。
    ============================================================ */
 window.TV_CHANGELOG = {
-  current: '2026-10-23.1',
+  current: '2026-10-24.1',
 
   entries: [
+    {
+      v: '2026-10-24.1',
+      date: '2026-10-24',
+      title: '地球更清晰，地名更好认',
+      items: [
+        '底图重新绘制：世界轮廓精度提升约 10 倍，贴图分辨率翻倍，放大后海岸线、岛屿和国界不再糊成一团。',
+        '地名随缩放同步变大：拉近时国家名会适度放大（最近处约 1.8 倍），字号按目标尺寸重新渲染，边缘保持锐利。',
+        '地名换成 Montserrat 字体，字形更舒展；界面其余文字仍用系统字体，标题保留原来的衬线字体。',
+        '修复浅色主题下刷新页面后地球仍是深色贴图的问题。'
+      ]
+    },
     {
       v: '2026-10-23.1',
       date: '2026-10-23',
       title: '地球标签与滚轮缩放优化',
       items: [
         '新增英文洲名与国家名标签：远景显示大洲名称，滚轮拉近后渐隐并显示更多国家名称，避免硬切和重叠。',
-        '标签采用圆润 Nunito 字体，本地加载；国家标签去掉背景色块，更干净。',
+        '标签改用本地加载的字体，不再依赖系统字体；国家标签去掉背景色块，更干净。',
         '滚轮缩放改为对数距离临界阻尼，连续滚动、停止及反向滚动更自然流畅。',
         '保留原缩放范围（1.28–4.4）及所有原有交互（重置、聚焦、频道点击等）。'
       ]
@@ -494,7 +505,9 @@ window.TV_CHANGELOG = {
       tex.anisotropy = Math.min(8, self.renderer.capabilities.getMaxAnisotropy());
       tex.wrapS = THREE.RepeatWrapping;
       self._texCache[key] = tex;
-      if (self.earthMat) {
+      // 只有当前主题的图才能上材质：init 会先用默认深色发一次请求，
+      // 若它比浅色图晚回来，旧代码会把浅色地球又盖成深色（界面浅、地球黑）。
+      if (self.earthMat && self.theme === theme) {
         self.earthMat.uniforms.uMap.value = tex;
         self.earthMat.uniforms.uHasMap.value = 1;
       }
@@ -733,7 +746,16 @@ window.TV_CHANGELOG = {
 
   GlobeView.prototype._measureLabels = function () {
     if (!this.labels) return;
-    this.labels.forEach(function (l) {l.width=l.node.offsetWidth;l.height=l.node.offsetHeight;});
+    this.labels.forEach(function (l) {
+      // 先回到 CSS 里的基础字号再量：量出来的宽高要始终对应基础字号，
+      // 否则缩放后再量，基准会被上一次的字号带偏。
+      l.node.style.fontSize = '';
+      var fs = parseFloat(getComputedStyle(l.node).fontSize) || 12;
+      l.basePx = fs;
+      l.px = fs;
+      l.width = l.node.offsetWidth;
+      l.height = l.node.offsetHeight;
+    });
     this._labelMeasureWidth = this._w;
   };
 
@@ -742,6 +764,12 @@ window.TV_CHANGELOG = {
     if (this._labelMeasureWidth !== this._w) this._measureLabels();
     // All fades derive from the rendered distance (not input direction or zoom target).
     var dist = this.dist;
+    // 标签字号跟着缩放走（参考 radiocast / Mapbox 的 text-size 随 zoom 插值）：
+    // 全球视角 1.0 倍，最近处约 1.8 倍，中间用幂函数过渡，避免线性插值在近处突然变大。
+    // 字号本身不改（改了会触发每个标签重排），用 transform 的 scale 缩放，盒子和碰撞一起按倍数放大。
+    var zoomT = Math.min(1, Math.max(0, Math.log(3.1 / dist) / Math.log(3.1 / 1.28)));
+    var labelScale = 1 + 0.8 * Math.pow(zoomT, 0.85);
+    var continentScale = 1 + 0.12 * zoomT;
     var levels = [1-smoothstep(2.55,3.10,dist),1-smoothstep(1.92,2.65,dist),1-smoothstep(1.50,2.05,dist)];
     var continentAlpha = smoothstep(2.48,3.18,dist);
     var budget = Math.round((this._w < 600 ? 10 : 16) + (1-smoothstep(1.28,3.1,dist)) * (this._w < 600 ? 20 : 42));
@@ -750,7 +778,7 @@ window.TV_CHANGELOG = {
     if (!this._labelUiAt || now-this._labelUiAt > 100) {
       this._labelUiAt=now; this._labelUi=[];
       var self=this;
-      document.querySelectorAll('.topbar,.hud,.zoomctl,.drawer.is-open,.player:not([hidden]),.tip:not([hidden]),.suggest:not([hidden]),.preview-badge').forEach(function (node) {
+      document.querySelectorAll('.topbar,.hud,.zoomctl,.drawer.is-open,.player:not([hidden]),.tip:not([hidden]),.suggest:not([hidden])').forEach(function (node) {
         var r=node.getBoundingClientRect(); if(r.width && r.height) self._labelUi.push({left:r.left-pad,right:r.right+pad,top:r.top-pad,bottom:r.bottom+pad});
       });
     }
@@ -765,8 +793,15 @@ window.TV_CHANGELOG = {
       if(edge <= 0) {l.alpha=0;l.node.style.opacity='0';continue;}
       v.project(this.camera);
       var x=(v.x*.5+.5)*width, y=(-v.y*.5+.5)*height;
-      var box={left:x-l.width/2-pad,right:x+l.width/2+pad,top:y-l.height/2-pad,bottom:y+l.height/2+pad};
-      l.node.style.transform='translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) translate(-50%,-50%)';
+      var sc=l.tier < 0 ? continentScale : labelScale;
+      // 字号按 0.25px 量化后真写 font-size，让浏览器按目标尺寸重新栅格化；
+      // 剩下的不到 3% 交给 transform 补，缩放过程才不会一格一格跳。
+      // 只写 transform:scale 会先按 12px 栅格化再拉伸，放大了就发虚。
+      var targetPx=l.basePx*sc, qPx=Math.round(targetPx*4)/4, resid=targetPx/qPx;
+      if(l.px!==qPx){l.node.style.fontSize=qPx+'px';l.px=qPx;}
+      var lw=l.width*sc, lh=l.height*sc;
+      var box={left:x-lw/2-pad,right:x+lw/2+pad,top:y-lh/2-pad,bottom:y+lh/2+pad};
+      l.node.style.transform='translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) translate(-50%,-50%) scale(' + resid.toFixed(3) + ')';
       l.box=box;
       if(v.z < -1 || v.z > 1 || box.left<10 || box.right>width-10 || box.top<10 || box.bottom>height-10 || base*edge<.02) continue;
       if(l.tier>=0 && count>=budget) continue;
